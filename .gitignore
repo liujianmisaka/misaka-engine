@@ -3,6 +3,7 @@
 bin/
 bin-int/
 Hazel/vendor/
+vendor/
 
 # Files
 *.user
