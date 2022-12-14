@@ -7,7 +7,7 @@ namespace Hazel {
 	public:
 		inline int GetKeyCode() const { return m_KeyCode; }
 
-		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
+		virtual int GetCategoryFlags() const override { return EventCategoryKeyboard | EventCategoryInput; }
 
 	protected:
 		KeyEvent(int keycode)
@@ -40,7 +40,9 @@ namespace Hazel {
 			事件类型永远是该类的事件，所以有一个静态成员就可以了。
 			可能会用到多态，所以需要虚函数 GetEventType() GetName()。
 		*/
-		EVENT_CLASS_TYPE(KeyPressed);
+		static EventType GetStaticType() { return EventType::KeyPressed; }
+		virtual EventType GetEventType() const override { return GetStaticType(); }
+		virtual const char* GetName() const override { return "KeyPressed"; }
 
 
 	private:
@@ -60,6 +62,8 @@ namespace Hazel {
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(KeyReleased)
+		static EventType GetStaticType() { return EventType::KeyReleased; }
+		virtual EventType GetEventType() const override { return GetStaticType(); }
+		virtual const char* GetName() const override { return "KeyReleased"; }
 	};
 }

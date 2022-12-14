@@ -18,42 +18,57 @@ namespace Hazel {
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(WindowResize);
-		EVENT_CLASS_CATEGORY(EventCategoryApplication);
+		static EventType GetStaticType() { return EventType::WindowResize; }
+		virtual EventType GetEventType() const override { return GetStaticType(); }
+		virtual const char* GetName() const override { return "WindowResize"; }
+		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
 
 	private:
 		unsigned int m_Width, m_Height;
 	};
 
 	class HAZEL_API WindowClosedEvent : public Event {
+	public:
 		WindowClosedEvent() {}
 
-		EVENT_CLASS_TYPE(WindowClose);
-		EVENT_CLASS_CATEGORY(EventCategoryApplication);
+		static EventType GetStaticType() { return EventType::WindowClose; }
+		virtual EventType GetEventType() const override { return GetStaticType(); }
+		virtual const char* GetName() const override { return "WindowClose"; }
+
+		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
 	};
 
 	class HAZEL_API AppTickEvent : public Event {
 	public:
 		AppTickEvent() {}
 
-		EVENT_CLASS_TYPE(AppTick);
-		EVENT_CLASS_CATEGORY(EventCategoryApplication);
+		static EventType GetStaticType() { return EventType::AppTick; }
+		virtual EventType GetEventType() const override { return GetStaticType(); }
+		virtual const char* GetName() const override { return "AppTick"; }
+
+		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
 	};
 
 	class HAZEL_API AppUpdateEvent : public Event {
 	public:
 		AppUpdateEvent() {}
 
-		EVENT_CLASS_TYPE(AppUpdate);
-		EVENT_CLASS_CATEGORY(EventCategoryApplication);
+		static EventType GetStaticType() { return EventType::AppUpdate; }
+		virtual EventType GetEventType() const override { return GetStaticType(); }
+		virtual const char* GetName() const override { return "AppUpdate"; }
+
+		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
 	};
 
 	class HAZEL_API AppRenderEvent : public Event {
 	public:
 		AppRenderEvent() {}
 
-		EVENT_CLASS_TYPE(AppRender);
-		EVENT_CLASS_CATEGORY(EventCategoryApplication);
+		static EventType GetStaticType() { return EventType::AppRender; }
+		virtual EventType GetEventType() const override { return GetStaticType(); }
+		virtual const char* GetName() const override { return "AppRender"; }
+
+		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
 	};
 
 }
