@@ -1,8 +1,9 @@
 #include "hzpch.h"
 
-#include <GLFW/glfw3.h>
-
 #include "Application.h"
+
+#include <glad/glad.h>
+
 #include "Hazel/Log.h"
 
 namespace Hazel {
