@@ -18,9 +18,9 @@ namespace Hazel {
 	};
 
 
-	class HAZEL_API KeyPressEvent : public KeyEvent {
+	class HAZEL_API KeyPressedEvent : public KeyEvent {
 	public:
-		KeyPressEvent(int keycode, int repeatCount)
+		KeyPressedEvent(int keycode, int repeatCount)
 			: KeyEvent(keycode), m_RepeatCount(repeatCount) {
 		}
 
@@ -28,7 +28,7 @@ namespace Hazel {
 
 		std::string ToString() const override {
 			std::stringstream ss;
-			ss << "KeyPressEvent: " << m_KeyCode << " (" << m_RepeatCount << " repeats)";
+			ss << "KeyPressedEvent: " << m_KeyCode << " (" << m_RepeatCount << " repeats)";
 			return ss.str();
 		}
 
@@ -65,5 +65,21 @@ namespace Hazel {
 		static EventType GetStaticType() { return EventType::KeyReleased; }
 		virtual EventType GetEventType() const override { return GetStaticType(); }
 		virtual const char* GetName() const override { return "KeyReleased"; }
+	};
+
+	class HAZEL_API KeyTypedEvent : public KeyEvent {
+	public:
+		KeyTypedEvent(int keycode)
+			: KeyEvent(keycode) {}
+
+		std::string ToString() const override {
+			std::stringstream ss;
+			ss << "KeyTypedEvent: " << m_KeyCode;
+			return ss.str();
+		}
+
+		static EventType GetStaticType() { return EventType::KeyTyped; }
+		virtual EventType GetEventType() const override { return GetStaticType(); }
+		virtual const char* GetName() const override { return "KeyTyped"; }
 	};
 }

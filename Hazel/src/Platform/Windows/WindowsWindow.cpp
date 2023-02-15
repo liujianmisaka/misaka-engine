@@ -5,6 +5,7 @@
 #include "Hazel/Events/KeyEvent.h"
 #include "Hazel/Events/MouseEvent.h"
 
+#include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
 namespace Hazel {
@@ -72,7 +73,7 @@ namespace Hazel {
 
 			switch (action) {
 				case GLFW_PRESS: {
-					KeyPressEvent event(key, 0);
+					KeyPressedEvent event(key, 0);
 					data.EventCallback(event);
 					break;
 				}	
@@ -83,11 +84,17 @@ namespace Hazel {
 				}
 					
 				case GLFW_REPEAT: {
-					KeyPressEvent event(key, 1);
+					KeyPressedEvent event(key, 1);
 					data.EventCallback(event);
 					break;
 				}
 			}
+		});
+
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			KeyTypedEvent event(keycode);
+			data.EventCallback(event);
 		});
 
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
