@@ -35,7 +35,7 @@ namespace Hazel {
 	void Application::OnEvent(Event& e) {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowClosedEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
-		HZ_CORE_TRACE("{0}", e);
+		//HZ_CORE_TRACE("{0}", e);
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ) {
 			(*--it)->OnEvent(e);
@@ -56,7 +56,7 @@ namespace Hazel {
 			}
 
 			auto [x, y] = Input::GetMousePosition();
-			HZ_CORE_TRACE("{0}, {1}", x, y);
+			//HZ_CORE_TRACE("{0}, {1}", x, y);
 
 			m_Window->OnUpdate();
 		}
