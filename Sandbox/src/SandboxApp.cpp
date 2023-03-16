@@ -32,6 +32,7 @@ public:
 	}
 };
 
+
 class Sandbox : public Hazel::Application {
 public:
 	Sandbox() {
