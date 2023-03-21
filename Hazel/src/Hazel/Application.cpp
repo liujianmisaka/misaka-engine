@@ -2,10 +2,9 @@
 
 #include "Application.h"
 
-#include <glad/glad.h>
-
 #include "Hazel/Log.h"
 #include "Hazel/Input.h"
+#include "Hazel/Renderer/Renderer.h"
 
 namespace Hazel {
 	Application* Application::s_Instance = nullptr;
@@ -81,8 +80,8 @@ namespace Hazel {
 		float squareVertices[3 * 4] = {
 			-0.75f, -0.75f, 0.0f,
 			 0.75f, -0.75f, 0.0f,
-			 0.70f,  0.75f, 0.0f,
-			-0.70f,  0.75f, 0.0f
+			 0.75f,  0.75f, 0.0f,
+			-0.75f,  0.75f, 0.0f
 		};
 
 		std::shared_ptr<VertexBuffer> squareVB;
@@ -155,16 +154,20 @@ namespace Hazel {
 	void Application::Run() {
 
 		while (m_Running) {
-			glClearColor(0.1f, 0.1f, 0.1f, 0);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RendererCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+			RendererCommand::Clear();
+
+			Renderer::BeginScene();
 
 			m_BlueShader->Bind();
-			m_SquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(m_SquareVA);
 
 			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(m_VertexArray);
+
+			Renderer::EndScene();
+
+			// Renderer::Flush();
 
 			for (Layer* layer : m_LayerStack) {
 				layer->OnUpdate();
