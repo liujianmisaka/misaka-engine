@@ -118,33 +118,33 @@ public:
 	}
 	
 
-	void OnUpdate() override {
+	void OnUpdate(Hazel::Timestep ts) override {
 
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT)) {
 			HZ_INFO("pressed left");
-			m_CameraPosition.x -= m_CameraMoveSpeed;
+			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
 		}
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_RIGHT)) {
 			HZ_INFO("pressed right");
-			m_CameraPosition.x += m_CameraMoveSpeed;
+			m_CameraPosition.x += m_CameraMoveSpeed * ts;
 		}
 
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_DOWN)) {
 			HZ_INFO("pressed down");
-			m_CameraPosition.y -= m_CameraMoveSpeed;
+			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
 		}
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_UP)) {
 			HZ_INFO("pressed up");
-			m_CameraPosition.y += m_CameraMoveSpeed;
+			m_CameraPosition.y += m_CameraMoveSpeed * ts;
 		}
 
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_A)) {
 			HZ_INFO("pressed A");
-			m_CameraRotation += m_CameraRotationSpeed;
+			m_CameraRotation += m_CameraRotationSpeed * ts;
 		}
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_D)) {
 			HZ_INFO("pressed D");
-			m_CameraRotation -= m_CameraRotationSpeed;
+			m_CameraRotation -= m_CameraRotationSpeed * ts;
 		}
 
 		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
@@ -179,9 +179,10 @@ private:
 
 	Hazel::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
-	float m_CameraMoveSpeed = 0.1f;
-	float m_CameraRotation = 0.f;
-	float m_CameraRotationSpeed = 2.0f;
+	float m_CameraMoveSpeed = 5.0f;
+
+	float m_CameraRotation = 0.0f;
+	float m_CameraRotationSpeed = 180.0f;
 };
 
 

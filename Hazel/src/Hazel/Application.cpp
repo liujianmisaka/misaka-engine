@@ -6,6 +6,8 @@
 #include "Hazel/Input.h"
 #include "Hazel/Renderer/Renderer.h"
 
+#include <GLFW/glfw3.h>
+
 namespace Hazel {
 	Application* Application::s_Instance = nullptr;
 
@@ -16,6 +18,7 @@ namespace Hazel {
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 	}
@@ -51,8 +54,12 @@ namespace Hazel {
 
 		while (m_Running) {
 
+			float time = (float)glfwGetTime();
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
 			for (Layer* layer : m_LayerStack) {
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 			}
 
 			m_ImGuiLayer->Begin();
