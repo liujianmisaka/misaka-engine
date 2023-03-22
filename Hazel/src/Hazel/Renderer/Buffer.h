@@ -65,7 +65,7 @@ namespace Hazel {
 
 		BufferLayout(const std::initializer_list<BufferElement>& elements) 
 			:m_Elements(elements) {
-			CaculateOffsetAndStride();
+			CalculateOffsetAndStride();
 		}
 
 		inline uint32_t GetStride() const { return m_Stride; }    // The whole vertex's stride.
@@ -77,7 +77,7 @@ namespace Hazel {
 		std::vector<BufferElement>::const_iterator end() const { return m_Elements.end(); }
 
 	private:
-		void CaculateOffsetAndStride() {
+		void CalculateOffsetAndStride() {
 			uint32_t offset = 0;
 			m_Stride = 0;
 			for (auto& element : m_Elements) {
