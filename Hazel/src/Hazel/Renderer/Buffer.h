@@ -40,7 +40,7 @@ namespace Hazel {
 		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
 			: Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized) {}
 
-		uint32_t GetCompontCount() const {
+		uint32_t GetCompontenCount() const {
 			switch (Type) {
 				case ShaderDataType::Float:    return 1;
 				case ShaderDataType::Float2:   return 2;

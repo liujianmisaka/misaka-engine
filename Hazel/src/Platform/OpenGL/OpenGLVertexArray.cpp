@@ -19,7 +19,7 @@ namespace Hazel {
 			case ShaderDataType::Int4:	   return GL_INT;
 			case ShaderDataType::Bool:	   return GL_BOOL;
 		}
-		HZ_CORE_ASSERT(false, "Unknow ShaderDataType!");
+		HZ_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return 0;
 	}
 
@@ -50,7 +50,7 @@ namespace Hazel {
 		for (const auto& element : layout) {
 			glEnableVertexAttribArray(index);
 			glVertexAttribPointer(index,
-								  element.GetCompontCount(),
+								  element.GetCompontenCount(),
 								  ShaderDataTypeToOpenGLType(element.Type),
 								  element.Normalized ? GL_TRUE : GL_FALSE,
 								  layout.GetStride(),
