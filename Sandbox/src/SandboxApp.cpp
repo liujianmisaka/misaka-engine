@@ -130,7 +130,7 @@ public:
 		// Texture///////////////////////////////////////////
 		/////////////////////////////////////////////////////
 
-		std::string textureShaderVertexSrc = R"(
+		/*std::string textureShaderVertexSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
@@ -159,9 +159,9 @@ public:
 			void main() {
 				color = texture(u_Texture, v_TexCoord);
 			}
-		)";
+		)";*/
 
-		m_TextureShader.reset(Hazel::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
+		m_TextureShader.reset(Hazel::Shader::Create("assets/shaders/Texture.glsl"));
 
 		m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
 		m_DockerTexture = Hazel::Texture2D::Create("assets/textures/docker.png");

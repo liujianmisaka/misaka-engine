@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Hazel::OpenGLShader">
+    <Position X="1.25" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAiAAAAAAAAAAAAAAAAAAAAAEDABIAAAAEAABWAAA=</HashCode>
+      <FileName>src\Platform\OpenGL\OpenGLShader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::Shader">
+    <Position X="1.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAEAABAAEAAAAAAA=</HashCode>
+      <FileName>src\Hazel\Renderer\Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::OpenGLContext">
+    <Position X="7.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAgACAAAAIAA=</HashCode>
+      <FileName>src\Platform\OpenGL\OpenGLContext.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::GraphicsContext">
+    <Position X="7.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAIAA=</HashCode>
+      <FileName>src\Hazel\Renderer\GraphicsContext.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::OpenGLIndexBuffer">
+    <Position X="4.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAiAAAAAAAAEAAAAAAAAAAAAAAAQAAAAAEAAQAAAA=</HashCode>
+      <FileName>src\Platform\OpenGL\OpenGLBuffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::IndexBuffer">
+    <Position X="4.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAgAAAAAAAAAAAAAAAAAABAAAAAEAAAAAEAAAAAAA=</HashCode>
+      <FileName>src\Hazel\Renderer\Buffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::OpenGLTexture2D">
+    <Position X="1.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAiAAAAAAAAAABAIAAAAJAAAAAAAKAAAAAAEAAAAA=</HashCode>
+      <FileName>src\Platform\OpenGL\OpenGLTexture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::Texture2D">
+    <Position X="1.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Hazel\Renderer\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::Texture">
+    <Position X="1.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAgAAAAAAAAABAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>src\Hazel\Renderer\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::OpenGLVertexArray">
+    <Position X="7.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAiAABAAAAAAABABAAAAAQAAIAAAAAAAAEAAACECA=</HashCode>
+      <FileName>src\Platform\OpenGL\OpenGLVertexArray.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::VertexArray">
+    <Position X="7.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAABABAAAAAAAAIAAEAAAAAEAEACAAA=</HashCode>
+      <FileName>src\Hazel\Renderer\VertexArray.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::OpenGLVertexBuffer">
+    <Position X="4.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAiAAAAAAAAEAAAAACAAAAAACAAAAIAAAEAAAQAAA=</HashCode>
+      <FileName>src\Platform\OpenGL\OpenGLBuffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::VertexBuffer">
+    <Position X="4.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAgAAAAAAAAAAAAAAAAAAAAACAAEAIAAAEAAAAAAA=</HashCode>
+      <FileName>src\Hazel\Renderer\Buffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hazel::RenderCommand">
+    <Position X="9.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAEAAAAAAAAAAEAAAACAABAAAA=</HashCode>
+      <FileName>src\Hazel\Renderer\RenderCommand.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>
