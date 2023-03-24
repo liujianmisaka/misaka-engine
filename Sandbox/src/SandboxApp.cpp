@@ -182,6 +182,13 @@ public:
 
 	void OnEvent(Hazel::Event& e) override{
 		m_CameraController.OnEvent(e);
+
+		if (e.GetEventType() == Hazel::EventType::WindowResize) {
+			auto& re = (Hazel::WindowResizeEvent&)e;
+
+			//float zoom = (float)re.GetWidth() / 1280.0f;
+			//m_CameraController.SetZoomLevel(zoom);
+		}
 	}
 private:
 	Hazel::ShaderLibrary m_ShaderLibrary;
