@@ -7,7 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-#include "Hazel/Application.h"
+#include "Hazel/Core/Application.h"
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include "examples/imgui_impl_opengl3.cpp"
