@@ -13,6 +13,7 @@ namespace Hazel {
 	struct Renderer2DStorage {
 		Ref<VertexArray> VertexArray;
 		Ref<Shader> FlatColorShader;
+		Ref<Shader> TextureShader;
 
 	};
 
@@ -44,6 +45,9 @@ namespace Hazel {
 		s_Data->VertexArray->SetIndexBuffer(squareIB);
 
 		s_Data->FlatColorShader = Shader::Create("assets/shaders/FlatColor.glsl");
+		s_Data->TextureShader = Shader::Create("assets/shaders/Texture.glsl");
+		s_Data->TextureShader->Bind();
+		s_Data->TextureShader->SetInt("u_Texture", 0);
 	}
 
 	void Renderer2D::Shutdown() {
@@ -53,6 +57,9 @@ namespace Hazel {
 	void Renderer2D::BeginScene(const OrthographicCamera& camera) {
 		s_Data->FlatColorShader->Bind();
 		s_Data->FlatColorShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+		s_Data->TextureShader->Bind();
+		s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 	}
 
 	void Renderer2D::EndScene() {
@@ -69,6 +76,22 @@ namespace Hazel {
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		s_Data->FlatColorShader->SetMat4("u_Transform", transform);
+
+		s_Data->VertexArray->Bind();
+		RenderCommand::DrawIndexed(s_Data->VertexArray);
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture) {
+		DrawQuad({ position.x, position.y, 0.0f }, size, texture);
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture) {
+		s_Data->TextureShader->Bind();
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		s_Data->FlatColorShader->SetMat4("u_Transform", transform);
+
+		texture->Bind();
 
 		s_Data->VertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->VertexArray);
