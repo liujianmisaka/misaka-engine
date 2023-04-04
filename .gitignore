@@ -16,3 +16,4 @@ vendor/
 # Files
 *.user
 *.hint
+Sandbox/*.json
