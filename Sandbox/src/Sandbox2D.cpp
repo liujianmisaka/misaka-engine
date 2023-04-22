@@ -17,6 +17,14 @@ void Sandbox2D::OnAttach() {
 	HZ_PROFILE_FUNCTION();
 
 	m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
+
+    m_ParticleProps.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
+	m_ParticleProps.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
+	m_ParticleProps.SizeBegin = 0.5f, m_ParticleProps.SizeVariation = 0.3f, m_ParticleProps.SizeEnd = 0.0f;
+	m_ParticleProps.LifeTime = 5.0f;
+	m_ParticleProps.Velocity = { 0.0f, 0.0f };
+	m_ParticleProps.VelocityVariation = { 3.0f, 1.0f };
+	m_ParticleProps.Position = { 0.0f, 0.0f };
 }
 
 void Sandbox2D::OnDetach() {
@@ -44,11 +52,11 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts) {
 
 		HZ_PROFILE_SCOPE("Renderer Draw");
 		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		Hazel::Renderer2D::DrawRotateQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, -45.0f, { 0.8f, 0.2f, 0.3f, 1.0f });
+        Hazel::Renderer2D::DrawRotateQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, glm::radians(-45.0f), { 0.8f, 0.2f, 0.3f, 1.0f });
 		Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 		Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
         Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 20.0f, 20.0f }, m_Texture, 10.0f);
-        Hazel::Renderer2D::DrawRotateQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, rotation, m_Texture, 20.0f);
+        Hazel::Renderer2D::DrawRotateQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, glm::radians(rotation), m_Texture, 20.0f);
 		Hazel::Renderer2D::EndScene();
 
         Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
@@ -62,7 +70,23 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts) {
 
 	}
 
-	// Renderer::Flush();
+	if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
+	{
+		auto [x, y] = Hazel::Input::GetMousePosition();
+		auto width = Hazel::Application::Get().GetWindow().GetWidth();
+		auto height = Hazel::Application::Get().GetWindow().GetHeight();
+
+		auto bounds = m_CameraController.GetBounds();
+		auto pos = m_CameraController.GetCamera().GetPosition();
+		x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
+		y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
+		m_ParticleProps.Position = { x + pos.x, y + pos.y };
+
+		for (int i = 0; i < 50; i++) m_ParticleSystem.Emit(m_ParticleProps);
+	}
+
+	m_ParticleSystem.OnUpdate(ts);
+	m_ParticleSystem.OnRender(m_CameraController.GetCamera());
 }
 
 void Sandbox2D::OnImGuiRender() {
