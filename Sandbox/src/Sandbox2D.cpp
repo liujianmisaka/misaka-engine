@@ -27,9 +27,15 @@ Sandbox2D::Sandbox2D()
     : Layer("Sandbox2D"), m_CameraController(1280.0f / 720.0f) { }
 
 void Sandbox2D::OnAttach() {
-	HZ_PROFILE_FUNCTION();
+    HZ_PROFILE_FUNCTION();
 
     m_CheckboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
+
+    Hazel::FramebufferSpecification fspec;
+    fspec.Width = 1280;
+    fspec.Height = 720;
+    m_Framebuffer = Hazel::Framebuffer::Create(fspec);
+
     #if 0
     m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
 
@@ -44,49 +50,50 @@ void Sandbox2D::OnAttach() {
     s_TextureMap['W'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 11, 11 }, { 128, 128 });
 
     m_ParticleProps.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
-	m_ParticleProps.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
-	m_ParticleProps.SizeBegin = 0.5f, m_ParticleProps.SizeVariation = 0.3f, m_ParticleProps.SizeEnd = 0.0f;
-	m_ParticleProps.LifeTime = 5.0f;
-	m_ParticleProps.Velocity = { 0.0f, 0.0f };
-	m_ParticleProps.VelocityVariation = { 3.0f, 1.0f };
-	m_ParticleProps.Position = { 0.0f, 0.0f };
+    m_ParticleProps.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
+    m_ParticleProps.SizeBegin = 0.5f, m_ParticleProps.SizeVariation = 0.3f, m_ParticleProps.SizeEnd = 0.0f;
+    m_ParticleProps.LifeTime = 5.0f;
+    m_ParticleProps.Velocity = { 0.0f, 0.0f };
+    m_ParticleProps.VelocityVariation = { 3.0f, 1.0f };
+    m_ParticleProps.Position = { 0.0f, 0.0f };
 
     m_CameraController.SetZoomLevel(5.0f);
     #endif
 }
 
 void Sandbox2D::OnDetach() {
-	HZ_PROFILE_FUNCTION();
+    HZ_PROFILE_FUNCTION();
 }
 
 void Sandbox2D::OnUpdate(Hazel::Timestep ts) {
 
-	HZ_PROFILE_FUNCTION();
+    HZ_PROFILE_FUNCTION();
 
-	// Update
-	m_CameraController.OnUpdate(ts);
-	
-	// Render
+    // Update
+    m_CameraController.OnUpdate(ts);
+
+    // Render
     Hazel::Renderer2D::ResetStats();    // reset stats
-	{
-		HZ_PROFILE_SCOPE("Renderer Prep");
-		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
-		Hazel::RenderCommand::Clear();
-	}
+    {
+        HZ_PROFILE_SCOPE("Renderer Prep");
+        m_Framebuffer->Bind();
+        Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+        Hazel::RenderCommand::Clear();
+    }
 
 
-	{
+    {
         static float rotation = 0.0f;
         rotation += ts * 20.0f;
 
-		HZ_PROFILE_SCOPE("Renderer Draw");
-		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        HZ_PROFILE_SCOPE("Renderer Draw");
+        Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
         Hazel::Renderer2D::DrawRotateQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, glm::radians(-45.0f), { 0.8f, 0.2f, 0.3f, 1.0f });
-		Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-		Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
+        Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+        Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
         Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 20.0f, 20.0f }, m_CheckboardTexture, 10.0f);
         Hazel::Renderer2D::DrawRotateQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, glm::radians(rotation), m_CheckboardTexture, 20.0f);
-		Hazel::Renderer2D::EndScene();
+        Hazel::Renderer2D::EndScene();
 
         Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
         for (float y = -5.0f; y < 5.0f; y += 0.5f) {
@@ -96,26 +103,26 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts) {
             }
         }
         Hazel::Renderer2D::EndScene();
-
-	}
+        m_Framebuffer->Unbind();
+    }
 
     #if 0
     if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT)) {
-		auto [x, y] = Hazel::Input::GetMousePosition();
-		auto width = Hazel::Application::Get().GetWindow().GetWidth();
-		auto height = Hazel::Application::Get().GetWindow().GetHeight();
+        auto [x, y] = Hazel::Input::GetMousePosition();
+        auto width = Hazel::Application::Get().GetWindow().GetWidth();
+        auto height = Hazel::Application::Get().GetWindow().GetHeight();
 
-		auto bounds = m_CameraController.GetBounds();
-		auto pos = m_CameraController.GetCamera().GetPosition();
-		x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
-		y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
-		m_ParticleProps.Position = { x + pos.x, y + pos.y };
+        auto bounds = m_CameraController.GetBounds();
+        auto pos = m_CameraController.GetCamera().GetPosition();
+        x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
+        y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
+        m_ParticleProps.Position = { x + pos.x, y + pos.y };
 
-		for (int i = 0; i < 50; i++) m_ParticleSystem.Emit(m_ParticleProps);
-	}
+        for (int i = 0; i < 50; i++) m_ParticleSystem.Emit(m_ParticleProps);
+    }
 
-	m_ParticleSystem.OnUpdate(ts);
-	m_ParticleSystem.OnRender(m_CameraController.GetCamera());
+    m_ParticleSystem.OnUpdate(ts);
+    m_ParticleSystem.OnRender(m_CameraController.GetCamera());
 
     Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
@@ -130,12 +137,12 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts) {
     //Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureStairs);
     //Hazel::Renderer2D::DrawQuad({ 1.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureBarrel);
     //Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f, 0.5f }, { 1.0f, 2.0f }, m_TextureTree);
-	Hazel::Renderer2D::EndScene();
+    Hazel::Renderer2D::EndScene();
     #endif
 }
 
 void Sandbox2D::OnImGuiRender() {
-	HZ_PROFILE_FUNCTION();
+    HZ_PROFILE_FUNCTION();
 
     // Note: Switch this to true to enable dockspace
     static bool dockingEnable = true;
@@ -191,23 +198,26 @@ void Sandbox2D::OnImGuiRender() {
             ImGui::EndMenuBar();
         }
 
-	ImGui::Begin("Settings");
+        ImGui::Begin("Settings");
 
-    auto stats = Hazel::Renderer2D::GetStats();
-    ImGui::Text("Render2D Stats:");
-    ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-    ImGui::Text("Quads: %d", stats.QuadCount);
-    ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-    ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+        auto stats = Hazel::Renderer2D::GetStats();
+        ImGui::Text("Render2D Stats:");
+        ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+        ImGui::Text("Quads: %d", stats.QuadCount);
+        ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+        ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-	ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+        ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+
+        uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+        ImGui::Image((void*)textureID, ImVec2{ 1280.0f, 720.0f });
 
         ImGui::End();
 
-	ImGui::End();
-}
+        ImGui::End();
+    }
 }
 
 void Sandbox2D::OnEvent(Hazel::Event& e) {
-	m_CameraController.OnEvent(e);
+    m_CameraController.OnEvent(e);
 }
