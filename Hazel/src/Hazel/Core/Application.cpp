@@ -11,13 +11,13 @@
 namespace Hazel {
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application() {
+	Application::Application(const std::string& name) {
 		HZ_PROFILE_FUNCTION();
 
 		HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
-		m_Window = Window::Create();
+		m_Window = Window::Create(WindowProps(name));
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
 		Renderer::Init();
@@ -44,6 +44,10 @@ namespace Hazel {
 		m_LayerStack.PushOverlay(layer);
 		layer->OnAttach();
 	}
+
+    void Application::Close() {
+        m_Running = false;
+    }
 
 	void Application::OnEvent(Event& e) {
 		HZ_PROFILE_FUNCTION();

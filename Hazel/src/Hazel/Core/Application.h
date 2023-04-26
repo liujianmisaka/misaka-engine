@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "Base.h"
 #include "Hazel/Events/Event.h"
 #include "Hazel/Core/Window.h"
 #include "Hazel/Events/ApplicationEvent.h"
@@ -15,7 +15,7 @@ namespace Hazel {
 	class Application {
 
 	public:
-		Application();
+		Application(const std::string& name = "Hazel App");
 		virtual ~Application();
 
 		void Run();
@@ -27,12 +27,12 @@ namespace Hazel {
 
 		inline Window& GetWindow() { return *m_Window; }
 
-		inline static Application& Get() { return *s_Instance; }
+        void Close();
 
+		inline static Application& Get() { return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowClosedEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
-		
 	private:
 		Scope<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
