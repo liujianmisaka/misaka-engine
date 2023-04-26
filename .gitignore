@@ -17,3 +17,4 @@ vendor/
 *.user
 *.hint
 Sandbox/*.json
+Sandbox/imgui.ini

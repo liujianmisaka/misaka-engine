@@ -30,6 +30,7 @@ void Sandbox2D::OnAttach() {
 	HZ_PROFILE_FUNCTION();
 
     m_CheckboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
+    #if 0
     m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
 
     m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 0, 11 }, { 128, 128 });
@@ -49,7 +50,9 @@ void Sandbox2D::OnAttach() {
 	m_ParticleProps.Velocity = { 0.0f, 0.0f };
 	m_ParticleProps.VelocityVariation = { 3.0f, 1.0f };
 	m_ParticleProps.Position = { 0.0f, 0.0f };
+
     m_CameraController.SetZoomLevel(5.0f);
+    #endif
 }
 
 void Sandbox2D::OnDetach() {
@@ -71,7 +74,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts) {
 		Hazel::RenderCommand::Clear();
 	}
 
- #if 0
+
 	{
         static float rotation = 0.0f;
         rotation += ts * 20.0f;
@@ -81,8 +84,8 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts) {
         Hazel::Renderer2D::DrawRotateQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, glm::radians(-45.0f), { 0.8f, 0.2f, 0.3f, 1.0f });
 		Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 		Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-        Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 20.0f, 20.0f }, m_Texture, 10.0f);
-        Hazel::Renderer2D::DrawRotateQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, glm::radians(rotation), m_Texture, 20.0f);
+        Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 20.0f, 20.0f }, m_CheckboardTexture, 10.0f);
+        Hazel::Renderer2D::DrawRotateQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, glm::radians(rotation), m_CheckboardTexture, 20.0f);
 		Hazel::Renderer2D::EndScene();
 
         Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
@@ -95,10 +98,9 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts) {
         Hazel::Renderer2D::EndScene();
 
 	}
-#endif
 
-	if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
-	{
+    #if 0
+    if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT)) {
 		auto [x, y] = Hazel::Input::GetMousePosition();
 		auto width = Hazel::Application::Get().GetWindow().GetWidth();
 		auto height = Hazel::Application::Get().GetWindow().GetHeight();
@@ -129,10 +131,65 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts) {
     //Hazel::Renderer2D::DrawQuad({ 1.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureBarrel);
     //Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f, 0.5f }, { 1.0f, 2.0f }, m_TextureTree);
 	Hazel::Renderer2D::EndScene();
+    #endif
 }
 
 void Sandbox2D::OnImGuiRender() {
 	HZ_PROFILE_FUNCTION();
+
+    // Note: Switch this to true to enable dockspace
+    static bool dockingEnable = true;
+    if (dockingEnable) {
+        static bool dockspaceOpen = true;
+        static bool opt_fullscreen_persistant = true;
+        static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
+        bool opt_fullscreen = opt_fullscreen_persistant;
+
+        // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
+        // because it would be confusing to have two docking targets within each others.
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+        if (opt_fullscreen) {
+            ImGuiViewport* viewport = ImGui::GetMainViewport();
+            ImGui::SetNextWindowPos(viewport->Pos);
+            ImGui::SetNextWindowSize(viewport->Size);
+            ImGui::SetNextWindowViewport(viewport->ID);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+            window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+            window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+        }
+
+        // When using ImGuiDockNodeFlags_PassthruDockspace, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
+        if (opt_flags & ImGuiDockNodeFlags_PassthruDockspace)
+            window_flags |= ImGuiWindowFlags_NoBackground;
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
+        ImGui::PopStyleVar();
+
+        if (opt_fullscreen)
+            ImGui::PopStyleVar(2);
+
+        // Dockspace
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
+            ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
+            ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), opt_flags);
+        }
+
+        if (ImGui::BeginMenuBar()) {
+            if (ImGui::BeginMenu("File")) {
+                // Disabling fullscreen would allow the window to be moved to the front of other windows, 
+                // which we can't undo at the moment without finer window depth/z control.
+                //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+
+                if (ImGui::MenuItem("Exit"))   Hazel::Application::Get().Close();
+                ImGui::EndMenu();
+            }
+
+
+            ImGui::EndMenuBar();
+        }
 
 	ImGui::Begin("Settings");
 
@@ -145,7 +202,10 @@ void Sandbox2D::OnImGuiRender() {
 
 	ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
 
+        ImGui::End();
+
 	ImGui::End();
+}
 }
 
 void Sandbox2D::OnEvent(Hazel::Event& e) {
