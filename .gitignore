@@ -18,3 +18,5 @@ vendor/
 *.hint
 Sandbox/*.json
 Sandbox/imgui.ini
+*.json
+Hazelnut/imgui.ini
