@@ -3,7 +3,6 @@
 #include "Application.h"
 
 #include "Hazel/Core/Log.h"
-#include "Hazel/Core/Input.h"
 #include "Hazel/Renderer/Renderer.h"
 
 #include <GLFW/glfw3.h>
@@ -54,13 +53,11 @@ namespace Hazel {
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowClosedEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
-		dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
+        dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ) {
+			if (e.Handled) break;
 			(*--it)->OnEvent(e);
-			if (e.Handled) {
-				break;
-			}
 		}
 	}
 
