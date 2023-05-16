@@ -6,7 +6,7 @@ namespace Hazel {
     class EditorLayer : public Layer {
     public:
         EditorLayer();
-        virtual ~EditorLayer() = default;
+        virtual ~EditorLayer() override = default;
 
         virtual void OnAttach() override;
         virtual void OnDetach() override;
@@ -24,6 +24,10 @@ namespace Hazel {
 
         Ref<Scene> m_ActiveScene;
         Entity m_SquareEntity;
+        Entity m_CameraEntity;
+        Entity m_SecondCamera;
+
+        bool m_PrimaryCamera = true;
 
         Ref<Texture2D> m_CheckboardTexture;
 
