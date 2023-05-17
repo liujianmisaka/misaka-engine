@@ -9,51 +9,6 @@
 
 namespace Hazel {
 
-    static void OnTransformConstruct(entt::registry& registry, entt::entity& entity) {
-        
-    }
-
-    Scene::Scene() {
-#ifdef ENTT_EXAMPLE_CODE
-        struct MeshComponent {
-            glm::vec2 mesh;
-        };
-
-        struct TransformComponent {
-            glm::mat4 Transform{ 1.0f };
-
-            TransformComponent() = default;
-            TransformComponent(const TransformComponent&) = default;
-            TransformComponent(const glm::mat4& transform)
-                : Transform(transform) { }
-
-            operator glm::mat4& () { return Transform; }
-            operator const glm::mat4& () const { return Transform; }
-        };
-
-        auto entity = m_Registry.create();
-        m_Registry.emplace<TransformComponent>(entity, glm::mat4(1.0f));
-
-        m_Registry.on_construct<TransformComponent>().connect<&OnTransformConstruct>();
-
-        if(m_Registry.all_of<TransformComponent>(entity)) {
-            TransformComponent& transform = m_Registry.get<TransformComponent>(entity);
-        }
-
-        auto view = m_Registry.view<TransformComponent>();
-        for (auto entity : view) {
-            TransformComponent& transform = view.get<TransformComponent>(entity);
-        }
-
-        auto group = m_Registry.group<TransformComponent>(entt::get<MeshComponent>);
-        for (auto entity : group) {
-            auto [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
-        }
-#endif
-    }
-
-    Scene::~Scene() {}
-
     Entity Scene::CreateEntity(const std::string& name) {
         Entity entity = { m_Registry.create(), this };
         entity.AddComponent<TransformComponent>();
@@ -68,9 +23,9 @@ namespace Hazel {
         const Camera* mainCamera = nullptr;
         const glm::mat4* cameraTransform = nullptr;
         {
-            const auto group = m_Registry.view<CameraComponent, TransformComponent>();
-            for(const auto entity : group) {
-                auto [camera, transform] = group.get<CameraComponent, TransformComponent>(entity);
+            const auto view = m_Registry.view<CameraComponent, TransformComponent>();
+            for(const auto entity : view) {
+                auto [camera, transform] = view.get<CameraComponent, TransformComponent>(entity);
                 if(camera.Primary) {
                     mainCamera = &camera.Camera;
                     cameraTransform = &transform.Transform;
@@ -91,5 +46,19 @@ namespace Hazel {
             Renderer2D::EndScene();
         }
 
+    }
+
+    void Scene::OnViewportResize(const uint32_t width, const uint32_t height) {
+        m_ViewportWidth = width;
+        m_ViewportHeight = height;
+
+        // Resize non-FixedAspectRatio Cameras
+        const auto view = m_Registry.view<CameraComponent>();
+        for(const auto entity : view) {
+            auto& cameraComponent = m_Registry.get<CameraComponent>(entity);
+            if(!cameraComponent.FixedAspectRatio) {
+                cameraComponent.Camera.SetViewportSize(width, height);
+            }
+        }
     }
 }
