@@ -1,9 +1,10 @@
 #include "EditorLayer.h"
 
-#include "imgui/imgui.h"
-
+#include <imgui/imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "Panels/SceneHierarchyPanel.h"
 
 namespace Hazel {
 
@@ -61,6 +62,8 @@ namespace Hazel {
 
         m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
         m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
 
     void EditorLayer::OnDetach() {
@@ -154,6 +157,8 @@ namespace Hazel {
 
             ImGui::EndMenuBar();
         }
+
+        m_SceneHierarchyPanel.OnImGuiRender();
 
         ImGui::Begin("Settings");
         auto stats = Hazel::Renderer2D::GetStats();
