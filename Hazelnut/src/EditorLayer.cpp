@@ -32,6 +32,31 @@ namespace Hazel {
         m_SecondCamera = m_ActiveScene->CreateEntity("Camera Entity");
         auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
         cc.Primary = false;
+
+        class CameraController : public ScriptableEntity {
+        public:
+            void OnCreate() {}
+
+            void OnDestroy() {
+                
+            }
+
+            void OnUpdate(Timestep ts) {
+                auto& transform = GetComponent<TransformComponent>().Transform;
+                constexpr float speed = 5.0f;
+
+                if (Input::IsKeyPressed(KeyCode::A))
+                    transform[3][0] -= speed * ts;
+                if (Input::IsKeyPressed(KeyCode::D))
+                    transform[3][0] += speed * ts;
+                if (Input::IsKeyPressed(KeyCode::W))
+                    transform[3][1] += speed * ts;
+                if (Input::IsKeyPressed(KeyCode::S))
+                    transform[3][1] -= speed * ts;
+            }
+        };
+
+        m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
     }
 
     void EditorLayer::OnDetach() {
@@ -172,7 +197,7 @@ namespace Hazel {
         
         m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
         
-        HZ_WARN("Viewport Size: {0}, {1}", viewportPanelSize.x, viewportPanelSize.y);
+        //HZ_WARN("Viewport Size: {0}, {1}", viewportPanelSize.x, viewportPanelSize.y);
         uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
         ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::End();

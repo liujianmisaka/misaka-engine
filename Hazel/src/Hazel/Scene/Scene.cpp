@@ -19,6 +19,20 @@ namespace Hazel {
 
     void Scene::OnuUpdate(Timestep ts) {
 
+        // Update Script
+        {
+            m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
+                if(!nsc.Instance) {
+                    nsc.InstantiateFunction();
+                    nsc.Instance->GetEntity() = Entity{ entity, this };
+                    if(nsc.OnCreateFunction)
+                        nsc.OnCreateFunction(nsc.Instance);
+                }
+                if(nsc.OnUpdateFunction)
+                    nsc.OnUpdateFunction(nsc.Instance, ts);
+            });
+        }
+
         // Render 2D
         const Camera* mainCamera = nullptr;
         const glm::mat4* cameraTransform = nullptr;

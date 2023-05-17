@@ -13,12 +13,10 @@ namespace Hazel {
 		    PushLayer(new EditorLayer());
 	    }
 
-	    ~Hazelnut() {
-
-	    }
+        ~Hazelnut() override = default;
     };
 
-    Application* Hazel::CreateApplication() {
+    Application* CreateApplication() {
 	    return new Hazelnut();
     }
 }
