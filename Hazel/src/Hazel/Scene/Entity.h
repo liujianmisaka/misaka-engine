@@ -35,8 +35,8 @@ namespace Hazel {
             m_Scene->m_Registry.remove<T>(m_EntityHandle);
         }
 
-        operator bool() const { return m_EntityHandle != entt::null; }
-        operator uint32_t() { return static_cast<uint32_t>(m_EntityHandle); }
+        explicit operator bool() const { return m_EntityHandle != entt::null; }
+        explicit operator uint32_t() { return static_cast<uint32_t>(m_EntityHandle); }
 
         bool operator==(const Entity& other) const {
             return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
