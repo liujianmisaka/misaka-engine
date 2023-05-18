@@ -99,9 +99,9 @@ namespace Hazel {
                 }
 
                 if(camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective) {
-                    float verticalFOV = glm::degrees(camera.GetPerspectiveVerticalFOV());
-                    if (ImGui::DragFloat("FOV", &verticalFOV))
-                        camera.SetPerspectiveVerticalFOV(glm::radians(verticalFOV));
+                    float perspectiveVerticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
+                    if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFov))
+                        camera.SetPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFov));
 
                     float perspectiveNear = camera.GetPerspectiveNearClip();
                     if (ImGui::DragFloat("Near", &perspectiveNear))
@@ -127,6 +127,15 @@ namespace Hazel {
 
                     ImGui::Checkbox("FixedAspectRatio", &fixedAspectRatio);
                 }
+
+                ImGui::TreePop();
+            }
+        }
+
+        if (entity.HasComponent<SpriteRendererComponent>()) {
+            if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Render")) {
+                auto& src = entity.GetComponent<SpriteRendererComponent>();
+                ImGui::ColorEdit4("Color", glm::value_ptr(src.Color), 0.10f);
 
                 ImGui::TreePop();
             }
