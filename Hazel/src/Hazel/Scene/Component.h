@@ -12,7 +12,7 @@ namespace Hazel {
 
         TagComponent() = default;
         TagComponent(const TagComponent&) = default;
-        TagComponent(const std::string& tag)
+        explicit TagComponent(const std::string& tag)
             : Tag(tag) { }
     };
 
@@ -21,7 +21,7 @@ namespace Hazel {
 
         TransformComponent() = default;
         TransformComponent(const TransformComponent&) = default;
-        TransformComponent(const glm::mat4& transform)
+        explicit TransformComponent(const glm::mat4& transform)
             : Transform(transform) { }
 
         operator glm::mat4& () { return Transform; }
@@ -33,7 +33,7 @@ namespace Hazel {
 
         SpriteRendererComponent() = default;
         SpriteRendererComponent(const SpriteRendererComponent&) = default;
-        SpriteRendererComponent(const glm::vec4& color)
+        explicit SpriteRendererComponent(const glm::vec4& color)
             : Color(color) { }
     };
 

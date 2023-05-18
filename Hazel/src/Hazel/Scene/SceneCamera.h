@@ -14,7 +14,8 @@ namespace Hazel {
 
         float GetOrthographicSize() const { return m_OrthographicSize; }
         void SetOrthographicSize(float size) {
-            m_OrthographicSize = size; RecalculateProjection();
+            m_OrthographicSize = size;
+            RecalculateProjection();
         }
     private:
         void RecalculateProjection();

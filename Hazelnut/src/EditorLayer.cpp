@@ -14,12 +14,12 @@ namespace Hazel {
     void EditorLayer::OnAttach() {
         HZ_PROFILE_FUNCTION();
 
-        m_CheckboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
+        m_CheckboardTexture = Texture2D::Create("assets/textures/Checkerboard.png");
 
-        Hazel::FramebufferSpecification fspec;
+        FramebufferSpecification fspec;
         fspec.Width = 1280;
         fspec.Height = 720;
-        m_Framebuffer = Hazel::Framebuffer::Create(fspec);
+        m_Framebuffer = Framebuffer::Create(fspec);
 
         m_ActiveScene = CreateRef<Scene>();
 
@@ -75,7 +75,7 @@ namespace Hazel {
         HZ_PROFILE_FUNCTION();
 
         // Resize
-        if (Hazel::FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+        if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
             m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
             (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
         {
