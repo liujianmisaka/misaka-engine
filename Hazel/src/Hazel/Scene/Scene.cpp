@@ -34,26 +34,26 @@ namespace Hazel {
 
         // Render 2D
         const Camera* mainCamera = nullptr;
-        const glm::mat4* cameraTransform = nullptr;
+        glm::mat4 cameraTransform {};
         {
             const auto view = m_Registry.view<CameraComponent, TransformComponent>();
             for(const auto entity : view) {
                 auto [camera, transform] = view.get<CameraComponent, TransformComponent>(entity);
                 if(camera.Primary) {
                     mainCamera = &camera.Camera;
-                    cameraTransform = &transform.Transform;
+                    cameraTransform = transform.GetTransform();
                     break;
                 }
             }
         }
 
         if(mainCamera) {
-            Renderer2D::BeginScene(*mainCamera, *cameraTransform);
+            Renderer2D::BeginScene(*mainCamera, cameraTransform);
             const auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
             for (const auto entity : group) {
                 auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-                Renderer2D::DrawQuad(transform, sprite.Color);
+                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
             }
             Renderer2D::EndScene();
         }
