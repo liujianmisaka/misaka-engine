@@ -1,10 +1,11 @@
 #include "SceneHierarchyPanel.h"
 
-#include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Hazel/Scene/Component.h"
-#include "imgui/imgui_internal.h"
 
 namespace Hazel {
     SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) {
@@ -28,11 +29,38 @@ namespace Hazel {
             m_SelectionEntity = {};
         }
 
+
+        // Right-click on blank space
+        if(ImGui::BeginPopupContextWindow(nullptr, 1, false)) {
+            if(ImGui::MenuItem("Create Empty Entity")) 
+                m_Context->CreateEntity("Empty Entity");
+            ImGui::EndPopup();
+        }
+
         ImGui::End();
 
         ImGui::Begin("Properties");
         if(m_SelectionEntity) {
             DrawComponents(m_SelectionEntity);
+
+            if(ImGui::Button("Add Component")) 
+                ImGui::OpenPopup("AddComponent");
+
+            if(ImGui::BeginPopup("AddComponent")) {
+
+                if(ImGui::MenuItem("Camera")) {
+                    m_SelectionEntity.AddComponent<CameraComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+
+                if (ImGui::MenuItem("Sprite Render")) {
+                    m_SelectionEntity.AddComponent<SpriteRendererComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+            
         }
         ImGui::End();
     }
@@ -47,8 +75,27 @@ namespace Hazel {
             m_SelectionEntity = entity;
         }
 
+        bool entityDeleted = false;
+        if (ImGui::BeginPopupContextItem()) {
+            if (ImGui::MenuItem("Delete Entity"))
+                entityDeleted = true;
+            ImGui::EndPopup();
+        }
+
         if(opened) {
+            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+            bool subopened = ImGui::TreeNodeEx((void*)986468, flags, tag.c_str());
+            if (subopened)
+                ImGui::TreePop();
             ImGui::TreePop();
+        }
+
+        // delay delete entity
+        if (entityDeleted) {
+            m_Context->DestroyEntity(entity);
+            if(m_SelectionEntity == entity) {
+                m_SelectionEntity = {};
+            }
         }
     }
 
@@ -115,8 +162,25 @@ namespace Hazel {
             }
         }
 
+        const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
+
         if(entity.HasComponent<TransformComponent>()) {
-            if(ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform")) {
+            const bool open = ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), treeNodeFlags, "Transform");
+
+            ImGui::SameLine();
+            if(ImGui::Button("+")) {
+                ImGui::OpenPopup("ComponentSettings");
+            }
+            bool removeComponent = false;
+            if(ImGui::BeginPopup("ComponentSettings")) {
+                if(ImGui::MenuItem("Remove component")) {
+                    removeComponent = true;
+                }
+
+                ImGui::EndPopup();
+            }
+
+            if(open) {
                 auto& tc = entity.GetComponent<TransformComponent>();
                 // WHY: Where set Camera move style?
                 // NOTE: Camera move style is set in Render2D::BeginScene()
@@ -128,10 +192,13 @@ namespace Hazel {
 
                 ImGui::TreePop();
             }
+
+            if (removeComponent)
+                entity.RemoveComponent<TransformComponent>();
         }
 
         if(entity.HasComponent<CameraComponent>()) {
-            if(ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera")) {
+            if(ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), treeNodeFlags, "Camera")) {
                 auto& [camera, primary, fixedAspectRatio] = entity.GetComponent<CameraComponent>();
 
                 ImGui::Checkbox("Primary", &primary);
@@ -147,11 +214,9 @@ namespace Hazel {
                             camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>(i));
                         }
 
-                        if(isSelected) {
+                        if(isSelected) 
                             ImGui::SetItemDefaultFocus();
-                        }
                     }
-
                     ImGui::EndCombo();
                 }
 
@@ -190,12 +255,30 @@ namespace Hazel {
         }
 
         if (entity.HasComponent<SpriteRendererComponent>()) {
-            if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Render")) {
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+            bool open = ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), treeNodeFlags, "Sprite Renderer");
+            ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+            if (ImGui::Button("+", ImVec2{ 20, 20 })) {
+                ImGui::OpenPopup("ComponentSettings");
+            }
+            ImGui::PopStyleVar();
+
+            bool removeComponent = false;
+            if (ImGui::BeginPopup("ComponentSettings")) {
+                if (ImGui::MenuItem("Remove component"))
+                    removeComponent = true;
+
+                ImGui::EndPopup();
+            }
+
+            if (open) {
                 auto& src = entity.GetComponent<SpriteRendererComponent>();
                 ImGui::ColorEdit4("Color", glm::value_ptr(src.Color));
-
                 ImGui::TreePop();
             }
+
+            if (removeComponent)
+                entity.RemoveComponent<SpriteRendererComponent>();
         }
     }
 }
