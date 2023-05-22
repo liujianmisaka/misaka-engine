@@ -141,6 +141,8 @@ namespace Hazel {
 
         // Dockspace
         ImGuiIO& io = ImGui::GetIO();
+        ImGuiStyle& style = ImGui::GetStyle();
+        style.WindowMinSize.x = 650.0f;
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
             ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), opt_flags);

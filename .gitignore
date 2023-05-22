@@ -21,3 +21,4 @@ Sandbox/imgui.ini
 *.json
 Hazelnut/imgui.ini
 *.vcxproj
+Hazel/vendor/imgui

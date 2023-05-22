@@ -10,4 +10,3 @@
 [submodule "Hazel/vendor/imgui"]
 	path = Hazel/vendor/imgui
 	url = git@github.com:TheCherno/imgui.git
-	branch = master
