@@ -22,3 +22,4 @@ Sandbox/imgui.ini
 Hazelnut/imgui.ini
 *.vcxproj
 Hazel/vendor/imgui
+Hazel/vendor/yaml-cpp

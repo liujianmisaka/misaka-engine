@@ -39,7 +39,7 @@ namespace Hazel {
 
         explicit operator bool() const { return m_EntityHandle != entt::null; }
         explicit operator uint32_t() { return static_cast<uint32_t>(m_EntityHandle); }
-        operator entt::entity() const { return m_EntityHandle; }
+        explicit operator entt::entity() const { return m_EntityHandle; }
 
         bool operator==(const Entity& other) const {
             return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
@@ -49,7 +49,6 @@ namespace Hazel {
             return !(*this == other);
         }
     private:
-        // TODO: entt::entity's valid id begins from 0
         entt::entity m_EntityHandle{ entt::null };
         Scene* m_Scene = nullptr;
     };

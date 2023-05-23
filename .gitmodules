@@ -10,3 +10,6 @@
 [submodule "Hazel/vendor/imgui"]
 	path = Hazel/vendor/imgui
 	url = git@github.com:TheCherno/imgui.git
+[submodule "Hazel/vendor/yaml-cpp"]
+	path = Hazel/vendor/yaml-cpp
+	url = git@github.com:TheCherno/yaml-cpp.git
