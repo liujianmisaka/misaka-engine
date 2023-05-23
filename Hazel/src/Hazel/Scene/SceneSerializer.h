@@ -7,11 +7,11 @@ namespace Hazel {
     public:
         SceneSerializer(const Ref<Scene>& scene);
 
-        void Serializer(const std::string& filepath);
-        void SerializerRuntime(const std::string& filepath);
+        void Serialize(const std::string& filepath);
+        void SerializeRuntime(const std::string& filepath);
 
-        bool Deserializer(const std::string& filepath);
-        bool DeserializerRuntime(const std::string& filepath);
+        bool Deserialize(const std::string& filepath);
+        bool DeserializeRuntime(const std::string& filepath);
     private:
         Ref<Scene> m_Scene;
     };

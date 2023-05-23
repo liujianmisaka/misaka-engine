@@ -135,7 +135,7 @@ namespace Hazel {
         out << YAML::EndMap; // Entity
     }
 
-    void SceneSerializer::Serializer(const std::string& filepath) {
+    void SceneSerializer::Serialize(const std::string& filepath) {
         YAML::Emitter out;
         out << YAML::BeginMap;
         out << YAML::Key << "Scene" << YAML::Value << "Untitled";
@@ -154,11 +154,11 @@ namespace Hazel {
         fout << out.c_str();
     }
 
-    void SceneSerializer::SerializerRuntime(const std::string& filepath) {
+    void SceneSerializer::SerializeRuntime(const std::string& filepath) {
         HZ_CORE_ASSERT(false, "SceneSerializer::SerializerRuntime not define now");
     }
 
-    bool SceneSerializer::Deserializer(const std::string& filepath) {
+    bool SceneSerializer::Deserialize(const std::string& filepath) {
         std::ifstream stream(filepath);
         std::stringstream strStream;
         strStream << stream.rdbuf();
@@ -223,7 +223,7 @@ namespace Hazel {
         return true;
     }
 
-    bool SceneSerializer::DeserializerRuntime(const std::string& filepath) {
+    bool SceneSerializer::DeserializeRuntime(const std::string& filepath) {
         HZ_CORE_ASSERT(false, "SceneSerializer::DeserializerRuntime not define now");
         return false;
     }

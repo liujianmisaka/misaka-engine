@@ -58,7 +58,7 @@ namespace Hazel {
 			    // m_Event会使用Event类型初始化
 				// 取m_Event的地址，然后强制转换为T* 类型的指针，再解引用获得T类型的对象
 				// Handled = func(event);
-				m_Event.Handled = func(*(T*)&m_Event);
+				m_Event.Handled = func(*static_cast<T*>(&m_Event));
 				return true;
 			}
 			return false;
