@@ -25,6 +25,9 @@ namespace Hazel {
         m_Framebuffer = Framebuffer::Create(fspec);
 
         m_ActiveScene = CreateRef<Scene>();
+
+        m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+
         #if 0
         // Entity
         m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
@@ -87,13 +90,16 @@ namespace Hazel {
             (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y)) {
             m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
-
+            m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
 
         // Update
         if (m_ViewportFocused)
             m_CameraController.OnUpdate(ts);
+        
+        m_EditorCamera.OnUpdate(ts);
+
 
         // Render
         Renderer2D::ResetStats();    // reset stats
@@ -103,7 +109,8 @@ namespace Hazel {
 
 
         // Update Scene
-        m_ActiveScene->OnuUpdate(ts);
+        //m_ActiveScene->OnuUpdateRuntime(ts);
+        m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
         m_Framebuffer->Unbind();
 
@@ -212,22 +219,29 @@ namespace Hazel {
             ImGuizmo::SetOrthographic(false);
             ImGuizmo::SetDrawlist();
 
-            float windowWidth = (float)ImGui::GetWindowWidth();
-            float windowHeight = (float)ImGui::GetWindowHeight();
+            const float windowWidth = ImGui::GetWindowWidth();
+            const float windowHeight = ImGui::GetWindowHeight();
             ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
             // Camera
-            auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-            const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-            const glm::mat4& cameraProjection = camera.GetProjection();
-            glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+
+            // ---- Runtime camera for entity
+            // auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+            // const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+            // const glm::mat4& cameraProjection = camera.GetProjection();
+            // glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+
+            // ---- Editor camera
+            const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
+            glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
+
 
             // Entity transform
             auto& tc = selectedEntity.GetComponent<TransformComponent>();
             glm::mat4 transform = tc.GetTransform();
 
             // Snapping
-            bool snap = Input::IsKeyPressed(Key::LeftControl);
+            const bool snap = Input::IsKeyPressed(Key::LeftControl);
             float snapValue = 0.5f;
             if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
                 snapValue = 45.0f;
@@ -244,7 +258,7 @@ namespace Hazel {
                 glm::vec3 translation, rotation, scale;
                 Math::DecomposeTransform(transform, translation, rotation, scale);
 
-                glm::vec3 deltaRotation = rotation - tc.Rotation;
+                const glm::vec3 deltaRotation = rotation - tc.Rotation;
                 tc.Translation = translation;
                 tc.Rotation += deltaRotation;
                 tc.Scale = scale;
@@ -259,7 +273,7 @@ namespace Hazel {
 
     void EditorLayer::OnEvent(Hazel::Event& e) {
         m_CameraController.OnEvent(e);
-
+        m_EditorCamera.OnEvent(e);
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
     }
@@ -308,9 +322,6 @@ namespace Hazel {
             default:
                 return false;
         }
-
-
-
         return true;
     }
 

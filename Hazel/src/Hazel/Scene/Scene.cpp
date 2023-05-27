@@ -21,7 +21,7 @@ namespace Hazel {
         m_Registry.destroy(static_cast<entt::entity>(entity));
     }
 
-    void Scene::OnuUpdate(Timestep ts) {
+    void Scene::OnUpdateRuntime(Timestep ts) {
 
         // Update Script
         {
@@ -61,7 +61,16 @@ namespace Hazel {
             }
             Renderer2D::EndScene();
         }
+    }
 
+    void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera) {
+        Renderer2D::BeginScene(camera);
+        const auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+        for (const auto entity : group) {
+            auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+            Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+        }
+        Renderer2D::EndScene();
     }
 
     void Scene::OnViewportResize(const uint32_t width, const uint32_t height) {

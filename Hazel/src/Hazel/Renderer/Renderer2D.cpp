@@ -105,22 +105,33 @@ namespace Hazel {
         delete[] s_Data.QuadVertexBufferBase;
     }
 
+    void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
+        HZ_PROFILE_FUNCTION();
+
+        const glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
+
+        s_Data.TextureShader->Bind();
+        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
+
+        StartBatch();
+    }
+
+    void Renderer2D::BeginScene(const EditorCamera& camera) {
+        HZ_PROFILE_FUNCTION();
+
+        const glm::mat4 viewProj = camera.GetViewProjection();
+
+        s_Data.TextureShader->Bind();
+        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
+
+        StartBatch();
+    }
+
     void Renderer2D::BeginScene(const OrthographicCamera& camera) {
         HZ_PROFILE_FUNCTION();
 
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-
-        StartBatch();
-    }
-
-    void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
-        HZ_PROFILE_FUNCTION();
-
-        glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
-
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
 
         StartBatch();
     }
