@@ -6,6 +6,7 @@
 // TEMPORY
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <ImGuizmo.h>
 
 #include "Hazel/Core/Application.h"
 
@@ -74,6 +75,7 @@ namespace Hazel {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+        ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End() {

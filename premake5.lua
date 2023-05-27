@@ -20,6 +20,7 @@ IncludeDir["glm"] = "Hazel/vendor/glm"
 IncludeDir["stb_image"] = "Hazel/vendor/stb_image"
 IncludeDir["entt"] = "Hazel/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "Hazel/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "Hazel/vendor/ImGuizmo"
 
 include "Hazel/vendor/GLFW"
 include "Hazel/vendor/Glad"
@@ -47,7 +48,10 @@ project "Hazel"
 		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/gml/glm/**.hpp",
-		"%{prj.name}/vendor/gml/glm/**.inl"
+		"%{prj.name}/vendor/gml/glm/**.inl",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
+
 	}
 
 	includedirs
@@ -60,7 +64,9 @@ project "Hazel"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.yaml_cpp}"
+		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.ImGuizmo}"
+
 		
 	}
 
@@ -72,6 +78,9 @@ project "Hazel"
 		"yaml-cpp",
 		"opengl32.lib"
 	}
+
+	filter "files:Hazel/vendor/ImGuizmo/**.cpp"
+		flags {"NoPCH"}
 
 	filter "system:windows"
 		systemversion "latest"
@@ -173,7 +182,8 @@ project "Hazelnut"
 		"Hazel/src",
 		"Hazel/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
