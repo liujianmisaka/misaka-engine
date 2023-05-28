@@ -20,7 +20,7 @@ namespace Hazel {
         m_CheckboardTexture = Texture2D::Create("assets/textures/Checkerboard.png");
 
         FramebufferSpecification fspec;
-        fspec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+        fspec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
         fspec.Width = 1280;
         fspec.Height = 720;
         m_Framebuffer = Framebuffer::Create(fspec);
@@ -113,6 +113,19 @@ namespace Hazel {
         //m_ActiveScene->OnuUpdateRuntime(ts);
         m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
+        auto [mx, my] = ImGui::GetMousePos();
+        mx -= m_ViewportBounds[0].x;
+        my -= m_ViewportBounds[0].y;
+        const glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+        my = viewportSize.y - my;
+        int mouseX = (int)mx;
+        int mouseY = (int)my;
+
+        if (mouseX >= 0 && mouseY >= 0 && mouseX < static_cast<int>(viewportSize.x) && mouseY < static_cast<int>(viewportSize.y)) {
+            int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+            HZ_CORE_WARN("Pixel data = {0}", pixelData);
+        }
+
         m_Framebuffer->Unbind();
 
     }
@@ -166,19 +179,15 @@ namespace Hazel {
                 // which we can't undo at the moment without finer window depth/z control.
                 //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
 
-                if (ImGui::MenuItem("New", "Ctrl+N")) {
+                if (ImGui::MenuItem("New", "Ctrl+N"))
                     NewScene();
-                }
-
-                if (ImGui::MenuItem("Open", "Ctrl+O")) {
+                if (ImGui::MenuItem("Open", "Ctrl+O"))
                     OpenScene();
-                }
-
-                if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S")) {
+                if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
                     SaveSceneAs();
-                }
+                if (ImGui::MenuItem("Exit"))
+                    Hazel::Application::Get().Close();
 
-                if (ImGui::MenuItem("Exit"))   Hazel::Application::Get().Close();
                 ImGui::EndMenu();
             }
 
@@ -200,6 +209,7 @@ namespace Hazel {
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
         ImGui::Begin("Viewport");
+        auto viewportOffset = ImGui::GetCursorPos();  // Includes tab bar
 
         m_ViewportFocused = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
@@ -212,6 +222,15 @@ namespace Hazel {
 
         uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
         ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+        auto windowSize = ImGui::GetWindowSize();
+        ImVec2 minBound = ImGui::GetWindowPos();
+        minBound.x += viewportOffset.x;
+        minBound.y += viewportOffset.y;
+
+        ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+        m_ViewportBounds[0] = { minBound.x, minBound.y };
+        m_ViewportBounds[1] = { maxBound.x, maxBound.y };
 
         // Gizmo
         Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
