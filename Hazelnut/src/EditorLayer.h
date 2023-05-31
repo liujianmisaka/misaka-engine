@@ -17,7 +17,8 @@ namespace Hazel {
         virtual void OnImGuiRender() override;
         void OnEvent(Event& e) override;
     private:
-        bool OnKeyPressed(KeyPressedEvent& e);
+        bool OnKeyPressed(const KeyPressedEvent& e);
+        bool OnMouseButtonPressed(const MouseButtonPressedEvent& e);
 
         void NewScene();
         void OpenScene();

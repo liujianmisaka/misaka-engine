@@ -295,9 +295,10 @@ namespace Hazel {
         m_EditorCamera.OnEvent(e);
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+        dispatcher.Dispatch<MouseButtonPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
     }
 
-    bool EditorLayer::OnKeyPressed(KeyPressedEvent& e) {
+    bool EditorLayer::OnKeyPressed(const KeyPressedEvent& e) {
         // Shortcuts
         if (e.GetRepeatCount() > 0)
             return false;
@@ -348,6 +349,15 @@ namespace Hazel {
             }
             default:
                 return false;
+        }
+        return true;
+    }
+
+    bool EditorLayer::OnMouseButtonPressed(const MouseButtonPressedEvent& e) {
+        if (e.GetMouseButton() == static_cast<int>(MouseCode::ButtonLeft)) {
+            if(m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(KeyCode::LeftAlt)) {
+                m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+            }
         }
         return true;
     }
