@@ -5,7 +5,7 @@
 
 namespace Hazel {
 
-	static GLenum ShaderDataTypeToOpenGLType(ShaderDataType type) {
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
 		switch (type) {
 			case ShaderDataType::Float:    return GL_FLOAT;
 			case ShaderDataType::Float2:   return GL_FLOAT;
@@ -50,25 +50,67 @@ namespace Hazel {
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
 		HZ_PROFILE_FUNCTION();
 
-		HZ_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+		HZ_CORE_ASSERT(!vertexBuffer->GetLayout().GetElements().empty(),"Vertex Buffer has no layout!");
 
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
 
-		uint32_t index = 0;
 		const auto& layout = vertexBuffer->GetLayout();
 		for (const auto& element : layout) {
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
-								  element.GetCompontenCount(),
-								  ShaderDataTypeToOpenGLType(element.Type),
-								  element.Normalized ? GL_TRUE : GL_FALSE,
-								  layout.GetStride(),
-								  (const void*)element.Offset);
-			index++;
+            switch (element.Type) {
+                case ShaderDataType::Float:
+                case ShaderDataType::Float2:
+                case ShaderDataType::Float3:
+                case ShaderDataType::Float4:
+                {
+                    glEnableVertexAttribArray(m_VertexBufferIndex);
+                    glVertexAttribPointer(m_VertexBufferIndex,
+                                          element.GetComponentCount(),
+                                          ShaderDataTypeToOpenGLBaseType(element.Type),
+                                          element.Normalized ? GL_TRUE : GL_FALSE,
+                                          layout.GetStride(),
+                                          (const void*)element.Offset);
+                    m_VertexBufferIndex++;
+                    break;
+                }
+                case ShaderDataType::Int:
+                case ShaderDataType::Int2:
+                case ShaderDataType::Int3:
+                case ShaderDataType::Int4:
+                case ShaderDataType::Bool:
+                {
+                    glEnableVertexAttribArray(m_VertexBufferIndex);
+                    glVertexAttribIPointer(m_VertexBufferIndex,
+                                           element.GetComponentCount(),
+                                           ShaderDataTypeToOpenGLBaseType(element.Type),
+                                           layout.GetStride(),
+                                           (const void*)element.Offset);
+                    m_VertexBufferIndex++;
+                    break;
+                }
+                case ShaderDataType::Mat3:
+                case ShaderDataType::Mat4:
+                {
+                    uint8_t count = element.GetComponentCount();
+                    for (uint8_t i = 0; i < count; i++) {
+                        glEnableVertexAttribArray(m_VertexBufferIndex);
+                        glVertexAttribPointer(m_VertexBufferIndex,
+                                              count,
+                                              ShaderDataTypeToOpenGLBaseType(element.Type),
+                                              element.Normalized ? GL_TRUE : GL_FALSE,
+                                              layout.GetStride(),
+                                              (const void*)(element.Offset + sizeof(float) * count * i));
+                        glVertexAttribDivisor(m_VertexBufferIndex, 1);
+                        m_VertexBufferIndex++;
+                    }
+                    break;
+                }
+                default:
+                    HZ_CORE_ASSERT(false, "Unknown ShaderDataType!");
+            }
 		}
 
-		m_Vertexbuffers.push_back(vertexBuffer);
+		m_VertexBuffers.push_back(vertexBuffer);
 	}
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) {
@@ -77,6 +119,6 @@ namespace Hazel {
 		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();
 
-		m_Indexbuffer = indexBuffer;
+		m_IndexBuffer = indexBuffer;
 	}
 }

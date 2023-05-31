@@ -58,6 +58,7 @@ namespace Hazel {
                 auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
                 Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
             }
             Renderer2D::EndScene();
         }
@@ -68,7 +69,7 @@ namespace Hazel {
         const auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
         for (const auto entity : group) {
             auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-            Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+            Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
         }
         Renderer2D::EndScene();
     }

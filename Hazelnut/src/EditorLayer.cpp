@@ -108,9 +108,11 @@ namespace Hazel {
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         RenderCommand::Clear();
 
+        // Clear our entity id attachment to -1
+        m_Framebuffer->ClearAttachment(1, -1);
 
         // Update Scene
-        //m_ActiveScene->OnuUpdateRuntime(ts);
+        //m_ActiveScene->OnUpdateRuntime(ts);
         m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
         auto [mx, my] = ImGui::GetMousePos();
@@ -118,12 +120,12 @@ namespace Hazel {
         my -= m_ViewportBounds[0].y;
         const glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
         my = viewportSize.y - my;
-        int mouseX = (int)mx;
-        int mouseY = (int)my;
+        const int mouseX = static_cast<int>(mx);
+        const int mouseY = static_cast<int>(my);
 
         if (mouseX >= 0 && mouseY >= 0 && mouseX < static_cast<int>(viewportSize.x) && mouseY < static_cast<int>(viewportSize.y)) {
             int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-            HZ_CORE_WARN("Pixel data = {0}", pixelData);
+            m_HoveredEntity = pixelData == -1 ? Entity() : Entity(static_cast<entt::entity>(pixelData), m_ActiveScene.get());
         }
 
         m_Framebuffer->Unbind();
@@ -198,7 +200,12 @@ namespace Hazel {
         m_SceneHierarchyPanel.OnImGuiRender();
 
         ImGui::Begin("Stats");
-        auto stats = Hazel::Renderer2D::GetStats();
+
+        std::string name = "None";
+        if (m_HoveredEntity)
+            name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
+        ImGui::Text("Hovered Entity: %s", name.c_str());
+        auto stats = Renderer2D::GetStats();
         ImGui::Text("Render2D Stats:");
         ImGui::Text("Draw Calls: %d", stats.DrawCalls);
         ImGui::Text("Quads: %d", stats.QuadCount);

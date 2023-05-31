@@ -3,11 +3,7 @@
 namespace Hazel {
 
 	enum class  ShaderDataType {
-		None = 0, 
-		Float, Float2, Float3, Float4, 
-		Mat3, Mat4, 
-		Int,Int2, Int3, Int4, 
-		Bool
+		None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int,Int2, Int3, Int4, Bool
 	};
 
 	static uint32_t ShaderDataTypeSize(ShaderDataType type) {
@@ -37,10 +33,10 @@ namespace Hazel {
 
 		BufferElement() {}
 
-		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
-			: Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized) {}
+		BufferElement(ShaderDataType type, std::string name, bool normalized = false)
+			: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized) {}
 
-		uint32_t GetCompontenCount() const {
+		uint32_t GetComponentCount() const {
 			switch (Type) {
 				case ShaderDataType::Float:    return 1;
 				case ShaderDataType::Float2:   return 2;
