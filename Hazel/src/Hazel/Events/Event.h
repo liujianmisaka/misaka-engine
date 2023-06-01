@@ -29,7 +29,7 @@ namespace Hazel {
 	};
 
 
-	class HAZEL_API Event {
+	class Event {
 	public:
         virtual ~Event() = default;
 

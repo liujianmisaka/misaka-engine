@@ -6,7 +6,7 @@
 
 
 namespace Hazel {
-	class HAZEL_API Input {
+	class Input {
 	public:
         static bool IsKeyPressed(KeyCode keycode);
         static bool IsMouseButtonPressed(MouseCode button);

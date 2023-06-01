@@ -8,7 +8,7 @@
 #pragma warning(pop)
 
 namespace Hazel {
-	class HAZEL_API Log
+	class Log
 	{
 	public:
 
