@@ -45,6 +45,8 @@ namespace Hazel {
         void CompileOrGetOpenGLBinaries();
         void CreateProgram();
 
+        void CompileOpenGLBinariesForAmd(GLenum& program, std::array<uint32_t, 2>& glShadersIDs);
+        void CreateProgramForAmd();
 
         void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
     private:
