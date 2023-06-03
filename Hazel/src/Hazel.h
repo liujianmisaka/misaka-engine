@@ -17,7 +17,7 @@
 #include "Hazel/Scene/Scene.h"
 #include "Hazel/Scene/Entity.h"
 #include "Hazel/Scene/ScriptableEntity.h"
-#include "Hazel/Scene/Component.h"
+#include "Hazel\Scene\Components.h"
 
 // ---------Renderer---------------
 #include "Hazel/Renderer/Renderer.h"
@@ -30,5 +30,7 @@
 #include "Hazel/Renderer/SubTexture2D.h"
 #include "Hazel/Renderer/VertexArray.h"
 #include "Hazel/Renderer/Framebuffer.h"
+
+#include "Hazel/Renderer/OrthographicCamera.h"
 
 // --------------------------------

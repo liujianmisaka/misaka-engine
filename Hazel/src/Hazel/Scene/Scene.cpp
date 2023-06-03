@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 
 #include "Hazel/Renderer/Renderer2D.h"
-#include "Component.h"
+#include "Components.h"
 #include "Entity.h"
 
 namespace Hazel {
@@ -33,7 +33,7 @@ namespace Hazel {
                     nsc.Instance->OnCreate();
                 }
                 nsc.Instance->OnUpdate(ts);
-            });
+                                                          });
         }
 
         // Render 2D
@@ -51,13 +51,13 @@ namespace Hazel {
             }
         }
 
-        if(mainCamera) {
+        if (mainCamera) {
             Renderer2D::BeginScene(*mainCamera, cameraTransform);
             const auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
             for (const auto entity : group) {
                 auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+                //Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
                 Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
             }
             Renderer2D::EndScene();
@@ -80,7 +80,7 @@ namespace Hazel {
 
         // Resize non-FixedAspectRatio Cameras
         const auto view = m_Registry.view<CameraComponent>();
-        for(const auto entity : view) {
+        for (const auto entity : view) {
             auto& cameraComponent = m_Registry.get<CameraComponent>(entity);
             if(!cameraComponent.FixedAspectRatio) {
                 cameraComponent.Camera.SetViewportSize(width, height);
@@ -90,9 +90,9 @@ namespace Hazel {
 
     Entity Scene::GetPrimaryCameraEntity() {
         auto view = m_Registry.view<CameraComponent>();
-        for(auto entity : view) {
+        for (auto entity : view) {
             const auto& camera = view.get<CameraComponent>(entity);
-            if(camera.Primary) {
+            if (camera.Primary) {
                 return Entity{ entity, this };
             }
         }
@@ -106,7 +106,7 @@ namespace Hazel {
 
     template<>
     void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) {
-        
+
     }
 
     template<>

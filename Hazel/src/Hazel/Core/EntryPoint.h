@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Application.h"
+#include "Hazel/Core/Application.h"
 
 #ifdef HZ_PLATFORM_WINDOWS
 

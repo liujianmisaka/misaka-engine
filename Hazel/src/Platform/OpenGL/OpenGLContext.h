@@ -5,15 +5,14 @@
 struct GLFWwindow;
 
 namespace Hazel {
-	class OpenGLContext : public GraphicsContext {
-	public:
-		OpenGLContext(GLFWwindow* m_WindowHandle);
 
-		virtual void Init() override;
-		virtual void SwapBuffers() override;
+    class OpenGLContext : public GraphicsContext {
+    public:
+        OpenGLContext(GLFWwindow* windowHandle);
 
-	private:
-		GLFWwindow* m_WindowHandle;
-	};
-
+        virtual void Init() override;
+        virtual void SwapBuffers() override;
+    private:
+        GLFWwindow* m_WindowHandle;
+    };
 }

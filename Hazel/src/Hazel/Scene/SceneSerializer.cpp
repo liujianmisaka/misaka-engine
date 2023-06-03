@@ -6,7 +6,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include "Entity.h"
-#include "Component.h"
+#include "Components.h"
 
 namespace YAML {
 

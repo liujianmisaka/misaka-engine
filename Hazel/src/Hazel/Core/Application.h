@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Base.h"
-#include "Hazel/Events/Event.h"
-#include "Hazel/Core/Window.h"
-#include "Hazel/Events/ApplicationEvent.h"
+#include "Hazel/Core/Base.h"
 #include "Hazel/Core/LayerStack.h"
+#include "Hazel/Core/Window.h"
+#include "Hazel/Events/Event.h"
+#include "Hazel/Events/ApplicationEvent.h"
 
 #include "Hazel/Core/Timestep.h"
 
@@ -34,6 +34,7 @@ namespace Hazel {
 		static Application& Get() { return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowClosedEvent& e);
+		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 	private:
 		Scope<Window> m_Window;

@@ -1,85 +1,65 @@
 #pragma once
 
-#include "Event.h"
+#include "Hazel/Events/Event.h"
+#include "Hazel/Core/KeyCodes.h"
 
 namespace Hazel {
-	class KeyEvent : public Event {
-	public:
-		inline int GetKeyCode() const { return m_KeyCode; }
 
-		virtual int GetCategoryFlags() const override { return EventCategoryKeyboard | EventCategoryInput; }
+    class KeyEvent : public Event {
+    public:
+        KeyCode GetKeyCode() const { return m_KeyCode; }
 
-	protected:
-		KeyEvent(int keycode)
-			:m_KeyCode(keycode) {
-		}
+        EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+    protected:
+        KeyEvent(const KeyCode keycode)
+            : m_KeyCode(keycode) { }
 
-		int m_KeyCode;
-	};
+        KeyCode m_KeyCode;
+    };
 
+    class KeyPressedEvent : public KeyEvent {
+    public:
+        KeyPressedEvent(const KeyCode keycode, const uint16_t repeatCount)
+            : KeyEvent(keycode), m_RepeatCount(repeatCount) { }
 
-	class KeyPressedEvent : public KeyEvent {
-	public:
-		KeyPressedEvent(int keycode, int repeatCount)
-			: KeyEvent(keycode), m_RepeatCount(repeatCount) {
-		}
+        uint16_t GetRepeatCount() const { return m_RepeatCount; }
 
-		inline int GetRepeatCount() const { return m_RepeatCount; }
+        std::string ToString() const override {
+            std::stringstream ss;
+            ss << "KeyPressedEvent: " << m_KeyCode << " (" << m_RepeatCount << " repeats)";
+            return ss.str();
+        }
 
-		std::string ToString() const override {
-			std::stringstream ss;
-			ss << "KeyPressedEvent: " << m_KeyCode << " (" << m_RepeatCount << " repeats)";
-			return ss.str();
-		}
+        EVENT_CLASS_TYPE(KeyPressed)
+    private:
+        uint16_t m_RepeatCount;
+    };
 
-		/*	EVENT_CLASS_TYPE(KeyPressed) equal the follow three lines:
-				static EventType GetStaticType() { return EventType::KeyPressed; }
-				virtual EventType GetEventType() const override { return GetStaticType(); }
-				virtual const char* GetName() const override { return "KeyPressed"; }
+    class KeyReleasedEvent : public KeyEvent {
+    public:
+        KeyReleasedEvent(const KeyCode keycode)
+            : KeyEvent(keycode) { }
 
-			事件类型永远是该类的事件，所以有一个静态成员就可以了。
-			可能会用到多态，所以需要虚函数 GetEventType() GetName()。
-		*/
-		static EventType GetStaticType() { return EventType::KeyPressed; }
-		virtual EventType GetEventType() const override { return GetStaticType(); }
-		virtual const char* GetName() const override { return "KeyPressed"; }
+        std::string ToString() const override {
+            std::stringstream ss;
+            ss << "KeyReleasedEvent: " << m_KeyCode;
+            return ss.str();
+        }
 
+        EVENT_CLASS_TYPE(KeyReleased)
+    };
 
-	private:
-		int m_RepeatCount;
-	};
+    class KeyTypedEvent : public KeyEvent {
+    public:
+        KeyTypedEvent(const KeyCode keycode)
+            : KeyEvent(keycode) { }
 
+        std::string ToString() const override {
+            std::stringstream ss;
+            ss << "KeyTypedEvent: " << m_KeyCode;
+            return ss.str();
+        }
 
-	class KeyReleasedEvent : public KeyEvent {
-	public:
-		KeyReleasedEvent(int keycode)
-			: KeyEvent(keycode) {
-		}
-
-		std::string ToString() const override {
-			std::stringstream ss;
-			ss << "KeyReleasedEvent: " << m_KeyCode;
-			return ss.str();
-		}
-
-		static EventType GetStaticType() { return EventType::KeyReleased; }
-		virtual EventType GetEventType() const override { return GetStaticType(); }
-		virtual const char* GetName() const override { return "KeyReleased"; }
-	};
-
-	class KeyTypedEvent : public KeyEvent {
-	public:
-		KeyTypedEvent(int keycode)
-			: KeyEvent(keycode) {}
-
-		std::string ToString() const override {
-			std::stringstream ss;
-			ss << "KeyTypedEvent: " << m_KeyCode;
-			return ss.str();
-		}
-
-		static EventType GetStaticType() { return EventType::KeyTyped; }
-		virtual EventType GetEventType() const override { return GetStaticType(); }
-		virtual const char* GetName() const override { return "KeyTyped"; }
-	};
+        EVENT_CLASS_TYPE(KeyTyped)
+    };
 }

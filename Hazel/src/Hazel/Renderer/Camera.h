@@ -7,7 +7,7 @@ namespace Hazel {
     class Camera {
     public:
         Camera() = default;
-        explicit Camera(const glm::mat4& projection)
+        Camera(const glm::mat4& projection)
             : m_Projection(projection) {}
 
         virtual ~Camera() = default;

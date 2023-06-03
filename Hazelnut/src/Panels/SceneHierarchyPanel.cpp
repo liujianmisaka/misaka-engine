@@ -5,7 +5,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Hazel/Scene/Component.h"
+#include "Hazel/Scene/Components.h"
 
 namespace Hazel {
     SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context) {

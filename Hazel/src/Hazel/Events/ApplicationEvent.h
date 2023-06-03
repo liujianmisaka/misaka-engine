@@ -1,70 +1,58 @@
 #pragma once
 
-#include "Event.h"
+#include "Hazel/Events/Event.h"
 
 namespace Hazel {
-	class WindowResizeEvent : public Event {
-	public:
-		WindowResizeEvent(unsigned int width, unsigned int height)
-			: m_Width(width), m_Height(height) {
-		}
 
-		inline unsigned int GetWidth() const { return m_Width; }
-		inline unsigned int GetHeight() const { return m_Height; }
+    class WindowResizeEvent : public Event {
+    public:
+        WindowResizeEvent(unsigned int width, unsigned int height)
+            : m_Width(width), m_Height(height) { }
 
-		std::string ToString() const override {
-			std::stringstream ss;
-			ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;
-			return ss.str();
-		}
+        unsigned int GetWidth() const { return m_Width; }
+        unsigned int GetHeight() const { return m_Height; }
 
-		static EventType GetStaticType() { return EventType::WindowResize; }
-		virtual EventType GetEventType() const override { return GetStaticType(); }
-		virtual const char* GetName() const override { return "WindowResize"; }
-		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
+        std::string ToString() const override {
+            std::stringstream ss;
+            ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;
+            return ss.str();
+        }
 
-	private:
-		unsigned int m_Width, m_Height;
-	};
+        EVENT_CLASS_TYPE(WindowResize)
+            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    private:
+        unsigned int m_Width, m_Height;
+    };
 
-	class WindowClosedEvent : public Event {
-	public:
-		WindowClosedEvent() {}
+    class WindowCloseEvent : public Event {
+    public:
+        WindowCloseEvent() = default;
 
-		static EventType GetStaticType() { return EventType::WindowClose; }
-		virtual EventType GetEventType() const override { return GetStaticType(); }
-		virtual const char* GetName() const override { return "WindowClose"; }
-		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
-	};
+        EVENT_CLASS_TYPE(WindowClose)
+            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
 
-	class AppTickEvent : public Event {
-	public:
-		AppTickEvent() {}
+    class AppTickEvent : public Event {
+    public:
+        AppTickEvent() = default;
 
-		static EventType GetStaticType() { return EventType::AppTick; }
-		virtual EventType GetEventType() const override { return GetStaticType(); }
-		virtual const char* GetName() const override { return "AppTick"; }
-		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
-	};
+        EVENT_CLASS_TYPE(AppTick)
+            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
 
-	class AppUpdateEvent : public Event {
-	public:
-		AppUpdateEvent() {}
+    class AppUpdateEvent : public Event {
+    public:
+        AppUpdateEvent() = default;
 
-		static EventType GetStaticType() { return EventType::AppUpdate; }
-		virtual EventType GetEventType() const override { return GetStaticType(); }
-		virtual const char* GetName() const override { return "AppUpdate"; }
-		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
-	};
+        EVENT_CLASS_TYPE(AppUpdate)
+            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
 
-	class AppRenderEvent : public Event {
-	public:
-		AppRenderEvent() {}
+    class AppRenderEvent : public Event {
+    public:
+        AppRenderEvent() = default;
 
-		static EventType GetStaticType() { return EventType::AppRender; }
-		virtual EventType GetEventType() const override { return GetStaticType(); }
-		virtual const char* GetName() const override { return "AppRender"; }
-		virtual int GetCategoryFlags() const override { return EventCategoryApplication; }
-	};
-
+        EVENT_CLASS_TYPE(AppRender)
+            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
 }

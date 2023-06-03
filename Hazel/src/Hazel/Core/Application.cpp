@@ -1,6 +1,6 @@
 #include "hzpch.h"
 
-#include "Application.h"
+#include "Hazel/Core/Application.h"
 
 #include "Hazel/Core/Log.h"
 #include "Hazel/Renderer/Renderer.h"
@@ -17,7 +17,7 @@ namespace Hazel {
 		s_Instance = this;
 
 		m_Window = Window::Create(WindowProps(name));
-		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+		m_Window->SetEventCallback(HZ_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
 
@@ -28,6 +28,7 @@ namespace Hazel {
 	Application::~Application() {
 		HZ_PROFILE_FUNCTION();
 
+        Renderer::Shutdown();
 	}
 
 	void Application::PushLayer(Layer* layer) {
@@ -52,12 +53,13 @@ namespace Hazel {
 		HZ_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowClosedEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
-        dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
+        dispatcher.Dispatch<WindowCloseEvent>(HZ_BIND_EVENT_FN(Application::OnWindowClose));
+        dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(Application::OnWindowResize));
 
-		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); ) {
-			if (e.Handled) break;
-			(*--it)->OnEvent(e);
+		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
+			if (e.Handled) 
+                break;
+			(*it)->OnEvent(e);
 		}
 	}
 
@@ -95,7 +97,7 @@ namespace Hazel {
 		}
 	}
 
-	bool Application::OnWindowClose(WindowClosedEvent& e) {
+	bool Application::OnWindowClose(WindowCloseEvent& e) {
 		m_Running = false;
 		return true;
 	}
@@ -109,7 +111,7 @@ namespace Hazel {
 		}
 
 		m_Minimized = false;
-		Renderer::onWindowReSize(e.GetWidth(), e.GetHeight());
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
 		return false;
 	}
