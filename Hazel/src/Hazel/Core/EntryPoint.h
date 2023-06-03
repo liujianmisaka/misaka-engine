@@ -1,16 +1,13 @@
 #pragma once
 
-#include "Application.h"
 #include "Hazel/Core/Application.h"
 
 #ifdef HZ_PLATFORM_WINDOWS
 
-extern Hazel::Application* Hazel::CreateApplication();
-
-int main() {
+int main(int argc, char** argv) {
 	Hazel::Log::Init();
 	HZ_PROFILE_BEGIN_SESSION("Starup", "HazelProfile-Startup.json");
-	auto app = Hazel::CreateApplication();
+	auto app = Hazel::CreateApplication({argc, argv});
 	HZ_PROFILE_END_SESSION();
 
 	HZ_PROFILE_BEGIN_SESSION("Runtime", "HazelProfile-Runtime.json");

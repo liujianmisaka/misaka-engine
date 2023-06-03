@@ -7,8 +7,8 @@ namespace Hazel {
 
     class Hazelnut : public Application {
     public:
-        Hazelnut()
-            : Application("Hazelnut")
+        Hazelnut(ApplicationCommandLineArgs args)
+            : Application("Hazelnut", args)
         {
 		    PushLayer(new EditorLayer());
 	    }
@@ -16,7 +16,7 @@ namespace Hazel {
         ~Hazelnut() override = default;
     };
 
-    Application* CreateApplication() {
-	    return new Hazelnut();
+    Application* CreateApplication(ApplicationCommandLineArgs args) {
+	    return new Hazelnut(args);
     }
 }
