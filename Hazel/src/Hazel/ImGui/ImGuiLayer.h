@@ -28,7 +28,7 @@ namespace Hazel {
 
         void SetDarkThemeColors();
 	private:
-        bool m_BlockEvents = false;
+        bool m_BlockEvents = true;
 	};
 
 }
