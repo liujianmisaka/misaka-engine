@@ -52,7 +52,8 @@ project "Hazel"
 		"Glad",
 		"ImGui",
 		"yaml-cpp",
-		"opengl32.lib"
+		"opengl32.lib",
+		"Dwmapi.lib"
 	}
 
 	filter "files:vendor/ImGuizmo/**.cpp"
