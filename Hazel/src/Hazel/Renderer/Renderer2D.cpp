@@ -300,7 +300,10 @@ namespace Hazel {
     }
 
     void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRendererComponent, int entityId) {
-        DrawQuad(transform, spriteRendererComponent.Color, entityId);
+        if(spriteRendererComponent.Texture)
+            DrawQuad(transform, spriteRendererComponent.Texture, spriteRendererComponent.TilingFactor, spriteRendererComponent.Color, entityId);
+        else
+            DrawQuad(transform, spriteRendererComponent.Color, entityId);
     }
 
     void Renderer2D::ResetStats() {

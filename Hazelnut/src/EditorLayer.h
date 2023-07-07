@@ -2,6 +2,7 @@
 
 #include "Hazel.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels\ContentBrowserPanel.h"
 
 #include "Hazel/Renderer/EditorCamera.h"
 
@@ -19,12 +20,19 @@ namespace Hazel {
         virtual void OnImGuiRender() override;
         void OnEvent(Event& e) override;
     private:
-        bool OnKeyPressed(KeyPressedEvent& e);
+        bool OnKeyPressed(const KeyPressedEvent& e);
         bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
         void NewScene();
         void OpenScene();
+        void OpenScene(const std::filesystem::path& path);
         void SaveSceneAs();
+
+        void OnScenePlay();
+        void OnSceneStop();
+
+        //UI Panels
+        void UI_Toolbar();
     private:
         Hazel::OrthographicCameraController m_CameraController;
 
@@ -40,22 +48,29 @@ namespace Hazel {
 
         Entity m_HoveredEntity;
 
-        bool m_PrimaryCamera = true;
-
         EditorCamera m_EditorCamera;
 
         Ref<Texture2D> m_CheckerboardTexture;
 
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
-        glm::vec2 m_ViewportBounds[2];
+        glm::vec2 m_ViewportBounds[2] {};
 
         glm::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 
         int m_GizmoType = -1;
 
+        enum class SceneState {
+            Edit = 0, Play = 1
+        };
+        SceneState m_SceneState = SceneState::Edit;
+
+        // Editor resources
+        Ref<Texture2D> m_IconPlay, m_IconStop;
+
         // Panels
         SceneHierarchyPanel m_SceneHierarchyPanel;
+        ContentBrowserPanel m_ContentBrowserPanel;
     };
 
 }
