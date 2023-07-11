@@ -6,11 +6,16 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
+#include "Hazel/Core/UUID.h"
 #include "Hazel/Scene/SceneCamera.h"
-#include "Hazel/Scene/ScriptableEntity.h"
 #include "Hazel/Renderer/Texture.h"
 
 namespace Hazel {
+    struct IDComponent {
+        UUID ID;
+        IDComponent() = default;
+        IDComponent(const IDComponent&) = default;
+    };
 
     struct TagComponent {
         std::string Tag;
@@ -61,6 +66,8 @@ namespace Hazel {
         CameraComponent(const CameraComponent&) = default;
     };
 
+    // Forward declaration
+    class ScriptableEntity;
     struct NativeScriptComponent {
         ScriptableEntity* Instance = nullptr;
 
