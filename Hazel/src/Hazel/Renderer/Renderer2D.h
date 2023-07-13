@@ -35,6 +35,8 @@ namespace Hazel {
 
         static void DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRendererComponent, int entityId);
 
+        static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness = 1.0f, float fade = 0.005f, int entityId = -1);
+
         // Stats
         struct Statistics {
             uint32_t DrawCalls = 0;
