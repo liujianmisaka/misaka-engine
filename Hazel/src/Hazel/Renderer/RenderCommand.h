@@ -22,8 +22,16 @@ namespace Hazel {
             s_RendererAPI->Clear();
         }
 
-        static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0) {
-            s_RendererAPI->DrawIndexed(vertexArray, count);
+        static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexxCount = 0) {
+            s_RendererAPI->DrawIndexed(vertexArray, indexxCount);
+        }
+
+        static void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount = 0) {
+            s_RendererAPI->DrawLines(vertexArray, vertexCount);
+        }
+
+        static void SetLineWidth(float width) {
+            s_RendererAPI->SetLineWidth(width);
         }
     private:
         static Scope<RendererAPI> s_RendererAPI;

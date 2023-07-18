@@ -42,9 +42,9 @@ Entities:
     TagComponent:
       Tag: Sprite
     TransformComponent:
-      Translation: [0.0216367245, 0.129103795, 0]
-      Rotation: [0, 0, -35.318058]
-      Scale: [0.539999962, 0.539999962, 0.540000021]
+      Translation: [-1.6742177, 1.12666559, 0]
+      Rotation: [0, 0, 2.38105392]
+      Scale: [0.539999247, 0.539999247, 0.540000021]
     SpriteRendererComponent:
       Color: [1, 1, 1, 1]
     Rigidbody2DComponent:
@@ -75,3 +75,14 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
+  - Entity: 11545900085498323544
+    TagComponent:
+      Tag: Circle
+    TransformComponent:
+      Translation: [2.59365845, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CircleRendererComponent:
+      Color: [0.365204036, 0.277245313, 0.818428159, 1]
+      Thickness: 1
+      Fade: 0.00499999989
