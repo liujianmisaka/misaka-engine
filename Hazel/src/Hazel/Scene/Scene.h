@@ -15,7 +15,7 @@ namespace Hazel {
     class Scene {
     public:
         Scene() = default;
-        ~Scene() = default;
+        ~Scene();
 
         static Ref<Scene> Copy(Ref<Scene> other);
 
@@ -26,7 +26,11 @@ namespace Hazel {
         void OnRuntimeStart();
         void OnRuntimeStop();
 
+        void OnSimulationStart();
+        void OnSimulationStop();
+
         void OnUpdateRuntime(Timestep ts);
+        void OnUpdateSimulation(Timestep ts, EditorCamera& camera);
         void OnUpdateEditor(Timestep ts, EditorCamera& camera);
 
         void OnViewportResize(uint32_t width, uint32_t height);
@@ -40,6 +44,11 @@ namespace Hazel {
             return m_Registry.view<Components...>();
         }
     private:
+        void OnPhysics2DStart();
+        void OnPhysics2DStop();
+
+        void RenderScene(EditorCamera& camera);
+
         template<typename T>
         void OnComponentAdded(Entity entity, T& component);
     private:
