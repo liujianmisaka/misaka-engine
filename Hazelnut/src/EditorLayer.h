@@ -23,13 +23,21 @@ namespace Hazel {
         bool OnKeyPressed(const KeyPressedEvent& e);
         bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
+        void OnOverlayRender();
+
         void NewScene();
         void OpenScene();
         void OpenScene(const std::filesystem::path& path);
+        void SaveScene();
         void SaveSceneAs();
 
+        void SerializeScene(Ref<Scene> scene, const std::filesystem::path& path);
+
         void OnScenePlay();
+        void OnSceneSimulate();
         void OnSceneStop();
+
+        void OnDuplicateEntity();
 
         //UI Panels
         void UI_Toolbar();
@@ -42,6 +50,9 @@ namespace Hazel {
         Ref<Framebuffer> m_Framebuffer;
 
         Ref<Scene> m_ActiveScene;
+        Ref<Scene> m_EditorScene;
+        std::filesystem::path m_EditorScenePath;
+
         Entity m_SquareEntity;
         Entity m_CameraEntity;
         Entity m_SecondCamera;
@@ -60,13 +71,15 @@ namespace Hazel {
 
         int m_GizmoType = -1;
 
+        bool m_ShowPhysicsCollider = false;
+
         enum class SceneState {
-            Edit = 0, Play = 1
+            Edit = 0, Play = 1, Simulate = 2
         };
         SceneState m_SceneState = SceneState::Edit;
 
         // Editor resources
-        Ref<Texture2D> m_IconPlay, m_IconStop;
+        Ref<Texture2D> m_IconPlay, m_IconSimulate, m_IconStop;
 
         // Panels
         SceneHierarchyPanel m_SceneHierarchyPanel;

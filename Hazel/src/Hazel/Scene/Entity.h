@@ -2,6 +2,8 @@
 
 #include <entt.hpp>
 #include "Hazel/Core/Log.h"
+#include "Hazel/Core/UUID.h"
+#include "Components.h"
 #include "Scene.h"
 
 namespace Hazel {
@@ -16,6 +18,13 @@ namespace Hazel {
         T& AddComponent(Args&&... args) {
             HZ_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
             T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+            m_Scene->OnComponentAdded<T>(*this, component);
+            return component;
+        }
+
+        template<typename T, typename... Args>
+        T& AddOrReplaceComponent(Args&&... args) {
+            T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
             m_Scene->OnComponentAdded<T>(*this, component);
             return component;
         }
@@ -48,6 +57,9 @@ namespace Hazel {
         bool operator!=(const Entity& other) const {
             return !(*this == other);
         }
+
+        UUID GetUUID() { return GetComponent<IDComponent>().ID; }
+        const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
     private:
         entt::entity m_EntityHandle{ entt::null };
         Scene* m_Scene = nullptr;
