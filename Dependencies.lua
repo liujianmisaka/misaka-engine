@@ -15,7 +15,7 @@ IncludeDir["SPIRV_Cross"] = "%{wks.location}/Hazel/vendor/SPIRV-Cross"
 IncludeDir["VulkanSDK"] = "%{wks.location}/Hazel/vendor/vulkan/Include"
 
 LibraryDir = {}
-LibraryDir["VulkanSDK"] = "C:/SDK/VulkanSDK/1.3.250.0/Lib"
+LibraryDir["VulkanSDK"] = path.join(os.getenv("VULKAN_SDK"), "Lib")
 
 Library = {}
 Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
