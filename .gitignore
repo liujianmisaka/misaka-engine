@@ -1,24 +1,27 @@
-# Directories
-.vs/
-bin/
+# Binaries
+**/bin/
 bin-int/
-Hazel/vendor/
-vendor/
 
 # Visual Studio files and folder
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.csproj
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.csproj
+
+# Directories
+Hazel/vendor/VulkanSDK
+Hazelnut/assets/cache
 
 # Files
 *.user
 *.hint
-Sandbox/*.json
-Sandbox/imgui.ini
 *.json
-Hazelnut/imgui.ini
-*.vcxproj
-Hazelnut/assets/cache
-Hazelnut/Hazel.log
+
+# Hazel files
+*.log
+
+
+
+
