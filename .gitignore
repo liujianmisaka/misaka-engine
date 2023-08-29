@@ -6,7 +6,6 @@ Hazel/vendor/
 vendor/
 
 # Visual Studio files and folder
-.vs/
 *.sln
 *.vcxproj
 *.vcxproj.filters
@@ -21,7 +20,5 @@ Sandbox/imgui.ini
 *.json
 Hazelnut/imgui.ini
 *.vcxproj
-Hazel/vendor/imgui
-Hazel/vendor/yaml-cpp
 Hazelnut/assets/cache
 Hazelnut/Hazel.log
