@@ -18,10 +18,7 @@ Hazelnut/assets/cache
 *.user
 *.hint
 *.json
+**/imgui.ini
 
 # Hazel files
 *.log
-
-
-
-
