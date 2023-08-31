@@ -13,9 +13,11 @@ IncludeDir["entt"] = "%{wks.location}/Hazel/vendor/entt/include"
 IncludeDir["shaderc"] = "%{wks.location}/Hazel/vendor/shaderc/include"
 IncludeDir["SPIRV_Cross"] = "%{wks.location}/Hazel/vendor/SPIRV-Cross"
 IncludeDir["VulkanSDK"] = "%{wks.location}/Hazel/vendor/vulkan/Include"
+IncludeDir["assimp"] = "%{wks.location}/Hazel/vendor/assimp/Include"
 
 LibraryDir = {}
 LibraryDir["VulkanSDK"] = path.join(os.getenv("VULKAN_SDK"), "Lib")
+LibraryDir["assimp"] = "%{wks.location}/Hazel/vendor/assimp/lib"
 
 Library = {}
 Library["Vulkan"] = "%{LibraryDir.VulkanSDK}/vulkan-1.lib"
@@ -28,3 +30,6 @@ Library["SPIRV_Tools_Debug"] = "%{LibraryDir.VulkanSDK}/SPIRV-Toolsd.lib"
 Library["ShaderC_Release"] = "%{LibraryDir.VulkanSDK}/shaderc_shared.lib"
 Library["SPIRV_Cross_Release"] = "%{LibraryDir.VulkanSDK}/spirv-cross-core.lib"
 Library["SPIRV_Cross_GLSL_Release"] = "%{LibraryDir.VulkanSDK}/spirv-cross-glsl.lib"
+
+Library["assimp"] = "%{LibraryDir.assimp}/Debug/assimp-vc143-mtd.lib"
+
