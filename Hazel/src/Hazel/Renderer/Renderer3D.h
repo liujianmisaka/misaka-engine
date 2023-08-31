@@ -8,6 +8,8 @@
 
 namespace Hazel {
 
+    static float PI = 3.14;
+
     class Renderer3D {
     public:
         static void Init();
@@ -35,6 +37,10 @@ namespace Hazel {
     private:
         static void StartBatch();
         static void NextBatch();
+        void GenerateSphere();
+    private:
+        static const int Y_SEGMENTS = 50;
+        static const int X_SEGMENTS = 50;
     };
 
 }

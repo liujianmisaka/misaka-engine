@@ -53,7 +53,7 @@ namespace Hazel {
     void Renderer3D::Init() {
         HZ_PROFILE_FUNCTION();
 
-        // Circle
+        // Sphere
         s_Data.SphereVertexArray = VertexArray::Create();
 
         s_Data.SphereVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(SphereVertex));
@@ -63,7 +63,7 @@ namespace Hazel {
             { ShaderDataType::Float4, "a_Color"         },
             { ShaderDataType::Float,  "a_Radius"        },
             { ShaderDataType::Int,    "a_EntityId"      }
-                                             });
+        });
         s_Data.SphereVertexArray->AddVertexBuffer(s_Data.SphereVertexBuffer);
         s_Data.SphereVertexBufferBase = new SphereVertex[Renderer2DData::MaxVertices];
 
@@ -140,6 +140,11 @@ namespace Hazel {
     void Renderer3D::NextBatch() {
         Flush();
         StartBatch();
+    }
+
+    void Renderer3D::GenerateSphere()
+    {
+        
     }
 
     void Renderer3D::ResetStats() {
