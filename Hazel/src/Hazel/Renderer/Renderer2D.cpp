@@ -8,6 +8,7 @@
 #include "Hazel/Renderer/Shader.h"
 #include "Hazel/Renderer/RenderCommand.h"
 #include "Hazel/Renderer/UniformBuffer.h"
+#include "Hazel/Model/Model.h"
 
 namespace Hazel {
 
@@ -90,6 +91,9 @@ namespace Hazel {
 
     void Renderer2D::Init() {
         HZ_PROFILE_FUNCTION();
+
+        Model model;
+        model.LoadModel();
 
         // Quad
         s_Data.QuadVertexArray = VertexArray::Create();
