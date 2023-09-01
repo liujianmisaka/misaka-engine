@@ -6,6 +6,11 @@
 #include "Hazel/Renderer/EditorCamera.h"
 #include "Hazel/Scene/Components.h"
 
+namespace Hazel
+{
+    struct MeshVertex;
+}
+
 namespace Hazel {
 
     class Renderer2D {
@@ -44,6 +49,8 @@ namespace Hazel {
 
         static float GetLineEidth();
         static void SetLineWidth(float width);
+
+        static void DrawMesh(const std::vector<MeshVertex>& meshes);
 
         // Stats
         struct Statistics {
