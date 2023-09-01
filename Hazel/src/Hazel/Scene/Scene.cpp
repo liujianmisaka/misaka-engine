@@ -10,6 +10,7 @@
 
 #include "Components.h"
 #include "Hazel/Renderer/Renderer2D.h"
+#include "Hazel/Model/Model.h"
 #include "Entity.h"
 #include "ScriptableEntity.h"
 
@@ -341,6 +342,15 @@ namespace Hazel {
 
                 Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, static_cast<int>(entity));
             }
+        }
+
+        // Draw Mesh
+        {
+            Model model{};
+            model.LoadModel();
+            std::vector<MeshVertex> meshes = model.GetMesh();
+
+            Renderer2D::DrawMesh(meshes);
         }
 
         //Renderer2D::DrawLine(glm::vec3(2.0f), glm::vec3(5.0f), glm::vec4(1, 0, 1, 1));

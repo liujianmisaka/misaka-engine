@@ -20,3 +20,4 @@
 [submodule "Hazel/vendor/yaml-cpp"]
 	path = Hazel/vendor/yaml-cpp
 	url = git@github.com:TheCherno/yaml-cpp.git
+                ignore = dirty

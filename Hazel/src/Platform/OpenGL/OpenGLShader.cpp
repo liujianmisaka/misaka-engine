@@ -342,7 +342,7 @@ namespace Hazel {
             auto size = in.tellg();
             in.seekg(0);
 
-            auto& data = std::vector<char>(size);
+            auto data = std::vector<char>(size);
             uint32_t format = 0;
             in.read((char*)&format, sizeof(uint32_t));
             in.read((char*)data.data(), size);
@@ -391,7 +391,7 @@ namespace Hazel {
         int glShaderIDIndex = 0;
         for (auto&& [stage, spirv] : m_VulkanSPIRV) {
             spirv_cross::CompilerGLSL glslCompiler(spirv);
-            auto& source = glslCompiler.compile();
+            auto source = glslCompiler.compile();
 
             uint32_t shader;
 
