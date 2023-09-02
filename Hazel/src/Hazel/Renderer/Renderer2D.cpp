@@ -69,14 +69,6 @@ namespace Hazel {
         LineVertex* LineVertexBufferBase = nullptr;
         LineVertex* LineVertexBufferPtr = nullptr;
 
-        // Mesh
-        Ref<VertexArray> MeshVertexArray;
-        Ref<VertexBuffer> MeshVertexBuffer;
-        Ref<Shader> MeshShader;
-        uint32_t MeshIndexCount = 0;
-        MeshVertex* MeshVertexBufferBase = nullptr;
-        MeshVertex* MeshVertexBufferPtr = nullptr;
-
         float LineWidth = 2.0f;
 
         Ref<Texture2D> WhiteTexture;
@@ -100,33 +92,7 @@ namespace Hazel {
     void Renderer2D::Init() {
         HZ_PROFILE_FUNCTION();
 
-        // Mesh
-        s_Data.MeshVertexArray = VertexArray::Create();
-
-        s_Data.MeshVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(MeshVertex));
-        s_Data.MeshVertexBuffer->SetLayout({
-            {ShaderDataType::Float3, "a_Position"},
-            {ShaderDataType::Float3, "a_Normal"},
-            {ShaderDataType::Float4, "a_Color"}
-        });
-        s_Data.MeshVertexArray->AddVertexBuffer(s_Data.MeshVertexBuffer);
-
-        s_Data.MeshVertexBufferBase = new MeshVertex[Renderer2DData::MaxVertices];
-
-        auto* meshIndices = new uint32_t[Renderer2DData::MaxIndices];
-
-        uint32_t meshOffset = 0;
-        for (uint32_t i = 0; i < Renderer2DData::MaxIndices; i += 6) {
-            meshIndices[i + 0] = meshOffset + 0;
-            meshIndices[i + 1] = meshOffset + 1;
-            meshIndices[i + 2] = meshOffset + 2;
-
-            meshOffset += 3;
-        }
-
-        Ref<IndexBuffer> meshIB = IndexBuffer::Create(meshIndices, Renderer2DData::MaxIndices);
-        s_Data.MeshVertexArray->SetIndexBuffer(meshIB);
-        delete[] meshIndices;
+        m_Renderer3D.Init();
 
         // Quad
         s_Data.QuadVertexArray = VertexArray::Create();
@@ -199,7 +165,6 @@ namespace Hazel {
         s_Data.QuadShader = Shader::Create("assets/shaders/Renderer2D_Quad.glsl");
         s_Data.CircleShader = Shader::Create("assets/shaders/Renderer2D_Circle.glsl");
         s_Data.LineShader = Shader::Create("assets/shaders/Renderer2D_Line.glsl");
-        s_Data.MeshShader = Shader::Create("assets/shaders/Renderer2D_Mesh.glsl");
 
         // Set first texture slot to 0
         s_Data.TextureSlots[0] = s_Data.WhiteTexture;
@@ -261,22 +226,13 @@ namespace Hazel {
         s_Data.LineVertexCount = 0;
         s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
 
-        s_Data.MeshIndexCount = 0;
-        s_Data.MeshVertexBufferPtr = s_Data.MeshVertexBufferBase;
+        m_Renderer3D.StartBatch();
 
         s_Data.TextureSlotIndex = 1;
     }
 
     void Renderer2D::Flush() {
-        if(s_Data.MeshIndexCount)
-        {
-            uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.MeshVertexBufferPtr - (uint8_t*)s_Data.MeshVertexBufferBase);
-            s_Data.MeshVertexBuffer->SetData(s_Data.MeshVertexBufferBase, dataSize);
-
-            s_Data.MeshShader->Bind();
-            RenderCommand::DrawIndexed(s_Data.MeshVertexArray, s_Data.MeshIndexCount);
-            s_Data.Stats.DrawCalls++;
-        }
+        m_Renderer3D.Flush();
 
         if (s_Data.QuadIndexCount) {
             uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
@@ -513,15 +469,7 @@ namespace Hazel {
 
     void Renderer2D::DrawMesh(const std::vector<MeshVertex>& meshes)
     {
-        for(const auto mesh : meshes)
-        {
-            s_Data.MeshVertexBufferPtr->vertex = mesh.vertex;
-            s_Data.MeshVertexBufferPtr->normal = mesh.normal;
-            s_Data.MeshVertexBufferPtr->color = mesh.color;
-            s_Data.MeshVertexBufferPtr++;
-
-            s_Data.MeshIndexCount += 1;
-        }
+        m_Renderer3D.DrawMesh(meshes);
     }
 
     void Renderer2D::ResetStats() {

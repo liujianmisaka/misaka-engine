@@ -14,16 +14,19 @@ namespace Hazel
         const aiScene* scene = importer.ReadFile(m_ModelPath,
                                                  aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
 
-        const aiMesh* aimesh = scene->mMeshes[0];
+        for (uint32_t index = 0; index < 1/*scene->mNumMeshes*/; index++) {
+            const aiMesh* aimesh = scene->mMeshes[index];
+            for (uint32_t i = 0; i < aimesh->mNumVertices; i++)
+            {
+                MeshVertex meshVertex{};
 
-        for(uint32_t i =0; i < aimesh->mNumVertices; i++)
-        {
-            MeshVertex mesh{};
+                //meshVertex.vertex = Utils::aiVector3DToGLm(aimesh->mVertices[i]);
+                meshVertex.m_Position = { aimesh->mVertices[i].x, aimesh->mVertices[i].y, aimesh->mVertices[i].z };
+                meshVertex.m_Color = { 0.2f, 0.4f, 0.8f, 1.0f };
+                meshVertex.m_Normal = { aimesh->mNormals[i].x,  aimesh->mNormals[i].y, aimesh->mNormals[i].z };
 
-            mesh.vertex = { aimesh->mVertices[i].x, aimesh->mVertices[i].y, aimesh->mVertices[i].z };
-            mesh.normal = { aimesh->mNormals[i].x,  aimesh->mNormals[i].y, aimesh->mNormals[i].z };
-
-            m_Meshes.push_back(mesh);
+                m_MeshVertices.push_back(meshVertex);
+            }
         }
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {

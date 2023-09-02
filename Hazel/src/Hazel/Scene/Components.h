@@ -43,7 +43,7 @@ namespace Hazel {
                 * rotation
                 * glm::scale(glm::mat4(1.0f), Scale);
         }
-        
+
     };
 
     struct SpriteRendererComponent {
@@ -135,5 +135,15 @@ namespace Hazel {
 
         CircleCollider2DComponent() = default;
         CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
+    };
+
+    struct MeshComponent
+    {
+        glm::vec3 Position;
+        glm::vec3 Normal;
+        glm::vec4 Color;
+
+        MeshComponent() = default;
+        MeshComponent(const MeshComponent&) = default;
     };
 }

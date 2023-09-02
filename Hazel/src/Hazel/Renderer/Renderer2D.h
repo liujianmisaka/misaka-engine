@@ -5,6 +5,7 @@
 #include "Hazel/Renderer/OrthographicCamera.h"
 #include "Hazel/Renderer/EditorCamera.h"
 #include "Hazel/Scene/Components.h"
+#include "Hazel/Renderer/Renderer3D.h"
 
 namespace Hazel
 {
@@ -66,6 +67,8 @@ namespace Hazel {
     private:
         static void StartBatch();
         static void NextBatch();
+
+        static Renderer3D m_Renderer3D;
     };
 
 }
