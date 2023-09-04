@@ -5,7 +5,6 @@
 #include "Hazel/Renderer/OrthographicCamera.h"
 #include "Hazel/Renderer/EditorCamera.h"
 #include "Hazel/Scene/Components.h"
-#include "Hazel/Renderer/Renderer3D.h"
 
 namespace Hazel
 {
@@ -51,8 +50,6 @@ namespace Hazel {
         static float GetLineEidth();
         static void SetLineWidth(float width);
 
-        static void DrawMesh(const std::vector<MeshVertex>& meshes);
-
         // Stats
         struct Statistics {
             uint32_t DrawCalls = 0;
@@ -67,8 +64,6 @@ namespace Hazel {
     private:
         static void StartBatch();
         static void NextBatch();
-
-        static Renderer3D m_Renderer3D;
     };
 
 }

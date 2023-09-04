@@ -1,18 +1,25 @@
 #pragma once
 
-#include "Hazel/Vertex/MeshVertex.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+
+#include "Hazel/Renderer/RendererData.h"
 
 namespace Hazel
 {
     class Model
     {
     public:
-        void LoadModel();
+        Model(std::string path);
+        const std::vector<MeshData>& GetData() { return m_Data; }
 
-        std::vector<MeshVertex> GetMesh() const { return m_MeshVertices; }
     private:
-        std::string m_ModelPath = "assets/stylized-popcorn-machine-lowpoly/source/SM_Popcorn Machine.fbx";
-        std::vector<MeshVertex> m_MeshVertices {};
+        void LoadModel();
+        void processNode(aiNode* node, const aiScene* scene);
+        MeshData processMesh(aiMesh* mesh, const aiScene* scene);
+    private:
+        std::string m_ModelPath;
+        std::vector<MeshData> m_Data;
     };
 
 }

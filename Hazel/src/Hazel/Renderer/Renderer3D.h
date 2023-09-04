@@ -4,8 +4,6 @@
 #include "Hazel/Renderer/OrthographicCamera.h"
 #include "Hazel/Renderer/EditorCamera.h"
 #include "Hazel/Scene/Components.h"
-#include "Hazel/Renderer/RendererData.h"
-
 
 namespace Hazel {
     class MeshVertex;
@@ -22,7 +20,7 @@ namespace Hazel {
         static void EndScene();
         static void Flush();
 
-        static void DrawMesh(const std::vector<MeshVertex>& meshes);
+        static void DrawMesh(const glm::mat4& transform, const std::vector<MeshVertex>& meshes);
 
         static void StartBatch();
         static void NextBatch();

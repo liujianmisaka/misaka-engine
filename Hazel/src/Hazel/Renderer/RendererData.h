@@ -1,20 +1,30 @@
 ﻿#pragma once
 
-#include "Hazel/Renderer/RendererDataStruct.h"
-
+#include "Hazel/Renderer/VertexArray.h"
+#include "Hazel/Renderer/Shader.h"
+#include "Hazel/Vertex/MeshVertex.h"
 
 namespace Hazel {
 
-    struct RendererData
+    struct MeshData
     {
-        MeshData m_MeshData;
-
-        void MeshDataInit();
+        std::vector<MeshVertex> m_Vertices;
+        std::vector<uint32_t> m_Indices;
     };
-    static RendererData s_RendererData;
 
+    class RendererData
+    {
+    public:
+        RendererData(MeshData data);
+
+        Ref<VertexArray> m_VertexArray;
+        Ref<VertexBuffer> m_VertexBuffer;
+        Ref<Shader> m_Shader;
+        uint32_t m_IndexCount = 0;
+        MeshVertex* m_VertexBufferBase = nullptr;
+        MeshVertex* m_VertexBufferPtr = nullptr;
+    };
 }
-
 
 namespace Hazel {
     struct RendererConfig
@@ -23,7 +33,7 @@ namespace Hazel {
         static constexpr uint32_t MaxVertices = MaxTriangles * 3;
         static constexpr uint32_t MaxIndices = MaxTriangles * 3;
         static constexpr uint32_t MaxTextureSlots = 32; // TODO: RenderCaps
-    };;
+    };
 
     // Stats
     struct Statistics

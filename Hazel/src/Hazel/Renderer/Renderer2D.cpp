@@ -92,8 +92,6 @@ namespace Hazel {
     void Renderer2D::Init() {
         HZ_PROFILE_FUNCTION();
 
-        m_Renderer3D.Init();
-
         // Quad
         s_Data.QuadVertexArray = VertexArray::Create();
 
@@ -226,14 +224,10 @@ namespace Hazel {
         s_Data.LineVertexCount = 0;
         s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
 
-        m_Renderer3D.StartBatch();
-
         s_Data.TextureSlotIndex = 1;
     }
 
     void Renderer2D::Flush() {
-        m_Renderer3D.Flush();
-
         if (s_Data.QuadIndexCount) {
             uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
             s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
@@ -465,11 +459,6 @@ namespace Hazel {
 
     void Renderer2D::SetLineWidth(float width) {
         s_Data.LineWidth = width;
-    }
-
-    void Renderer2D::DrawMesh(const std::vector<MeshVertex>& meshes)
-    {
-        m_Renderer3D.DrawMesh(meshes);
     }
 
     void Renderer2D::ResetStats() {

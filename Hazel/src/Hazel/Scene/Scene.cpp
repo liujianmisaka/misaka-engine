@@ -13,6 +13,7 @@
 #include "Hazel/Model/Model.h"
 #include "Entity.h"
 #include "ScriptableEntity.h"
+#include "Hazel/Renderer/Renderer3D.h"
 
 namespace Hazel {
 
@@ -346,11 +347,21 @@ namespace Hazel {
 
         // Draw Mesh
         {
-            Model model{};
-            model.LoadModel();
-            std::vector<MeshVertex> meshes = model.GetMesh();
+            
 
-            Renderer2D::DrawMesh(meshes);
+            const auto view = m_Registry.view<TransformComponent>();
+            for (auto entity : view) {
+                auto transform = view.get<TransformComponent>(entity);
+
+                Model model("assets/stylized-popcorn-machine-lowpoly/source/SM_Popcorn Machine.fbx");
+                std::vector<MeshData> meshdatas = model.GetData();
+
+                for(const MeshData& data : meshdatas)
+                {
+                    Renderer3D::DrawMesh(transform.GetTransform(), data.m_Vertices);
+                }
+                
+            }
         }
 
         //Renderer2D::DrawLine(glm::vec3(2.0f), glm::vec3(5.0f), glm::vec4(1, 0, 1, 1));
