@@ -33,7 +33,7 @@ namespace Hazel {
     template<typename Component>
     static void CopyComponent(entt::registry& dst, const entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap) {
         auto view = src.view<Component>();
-        for(auto e : view) {
+        for (auto e : view) {
             UUID uuid = src.get<IDComponent>(e).ID;
             HZ_CORE_ASSERT(enttMap.find(uuid) != enttMap.end());
             entt::entity dstEnttID = enttMap.at(uuid);
@@ -45,7 +45,7 @@ namespace Hazel {
 
     template<typename Component>
     static void CopyComponentIfExists(Entity dst, Entity src) {
-        if(src.HasComponent<Component>()) {
+        if (src.HasComponent<Component>()) {
             dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
         }
     }
@@ -66,7 +66,7 @@ namespace Hazel {
 
         // Create entities in new scene
         auto idView = srcSceneRegistry.view<IDComponent>();
-        for(auto e : idView) {
+        for (auto e : idView) {
             UUID uuid = srcSceneRegistry.get<IDComponent>(e).ID;
             const auto& name = srcSceneRegistry.get<TagComponent>(e).Tag;
             Entity newEntity = newScene->CreateEntityWithUUID(uuid, name);
@@ -124,13 +124,13 @@ namespace Hazel {
         {
             m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
                 // TODO: Move to Scene::OnScenePlay
-                if(!nsc.Instance) {
+                if (!nsc.Instance) {
                     nsc.Instance = nsc.InstantiateScript();
                     nsc.Instance->GetEntity() = Entity{ entity, this };
                     nsc.Instance->OnCreate();
                 }
                 nsc.Instance->OnUpdate(ts);
-            });
+                                                          });
         }
 
         // Physics 2D
@@ -141,7 +141,7 @@ namespace Hazel {
 
             // Retrieve transform from Box2D
             auto view = m_Registry.view<Rigidbody2DComponent>();
-            for(auto e : view) {
+            for (auto e : view) {
                 Entity entity = { e, this };
                 auto& transform = entity.GetComponent<TransformComponent>();
                 auto rb2d = entity.GetComponent<Rigidbody2DComponent>();
@@ -156,12 +156,12 @@ namespace Hazel {
 
         // Render 2D
         const Camera* mainCamera = nullptr;
-        glm::mat4 cameraTransform {};
+        glm::mat4 cameraTransform{};
         {
             const auto view = m_Registry.view<CameraComponent, TransformComponent>();
-            for(const auto entity : view) {
+            for (const auto entity : view) {
                 auto [camera, transform] = view.get<CameraComponent, TransformComponent>(entity);
-                if(camera.Primary) {
+                if (camera.Primary) {
                     mainCamera = &camera.Camera;
                     cameraTransform = transform.GetTransform();
                     break;
@@ -186,7 +186,7 @@ namespace Hazel {
             // Draw Circles
             {
                 const auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
-                for(auto entity : view) {
+                for (auto entity : view) {
                     auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
 
                     Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, static_cast<int>(entity));
@@ -235,7 +235,7 @@ namespace Hazel {
         const auto view = m_Registry.view<CameraComponent>();
         for (const auto entity : view) {
             auto& cameraComponent = m_Registry.get<CameraComponent>(entity);
-            if(!cameraComponent.FixedAspectRatio) {
+            if (!cameraComponent.FixedAspectRatio) {
                 cameraComponent.Camera.SetViewportSize(width, height);
             }
         }
@@ -346,20 +346,14 @@ namespace Hazel {
 
         // Draw Mesh
         {
-            
-
             const auto view = m_Registry.view<TransformComponent>();
             for (auto entity : view) {
                 auto transform = view.get<TransformComponent>(entity);
 
                 Model model("assets/stylized-popcorn-machine-lowpoly/source/SM_Popcorn Machine.fbx");
-                std::vector<MeshData> meshdatas = model.GetData();
+                const MeshData& meshdata = model.GetData();
 
-                for(const MeshData& data : meshdatas)
-                {
-                    Renderer3D::DrawMesh(transform.GetTransform(), data.m_Vertices);
-                }
-                
+                Renderer2D::DrawMesh(transform.GetTransform(), meshdata);
             }
         }
 
@@ -387,6 +381,11 @@ namespace Hazel {
 
     template<>
     void Scene::OnComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component) {
+
+    }
+
+    template<>
+    void Scene::OnComponentAdded<MeshRendererComponent>(Entity entity, MeshRendererComponent& component) {
 
     }
 

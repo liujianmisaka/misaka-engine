@@ -22,8 +22,8 @@ namespace Hazel {
 
         TagComponent() = default;
         TagComponent(const TagComponent&) = default;
-        TagComponent(const std::string& tag)
-            : Tag(tag) { }
+        TagComponent(std::string tag)
+            : Tag(std::move(tag)) { }
     };
 
     struct TransformComponent {
@@ -64,6 +64,14 @@ namespace Hazel {
 
         CircleRendererComponent() = default;
         CircleRendererComponent(const CircleRendererComponent&) = default;
+    };
+
+    struct MeshRendererComponent
+    {
+        glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+
+        MeshRendererComponent() = default;
+        MeshRendererComponent(const MeshRendererComponent&) = default;
     };
 
     struct CameraComponent {

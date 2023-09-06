@@ -9,38 +9,10 @@
 #include "Hazel/Renderer/RenderCommand.h"
 #include "Hazel/Renderer/UniformBuffer.h"
 #include "Hazel/Model/Model.h"
+#include "Hazel/Renderer/VertexStruct.h"
+#include "Hazel/Model/Model.h"
 
 namespace Hazel {
-
-    struct QuadVertex {
-        glm::vec3 Position;
-        glm::vec4 Color;
-        glm::vec2 TexCoord;
-        float TexIndex;
-        float TilingFactor;
-
-        // Editor only
-        int EntityId;
-    };
-
-    struct CircleVertex {
-        glm::vec3 WorldPosition;
-        glm::vec3 LocalPosition;
-        glm::vec4 Color;
-        float Thickness;
-        float Fade;
-
-        // Editor only
-        int EntityId;
-    };
-
-    struct LineVertex {
-        glm::vec3 Position;
-        glm::vec4 Color;
-
-        // Editor only
-        int EntityId;
-    };
 
     struct Renderer2DData {
         static constexpr uint32_t MaxQuads = 20000;
@@ -68,6 +40,7 @@ namespace Hazel {
         uint32_t LineVertexCount = 0;
         LineVertex* LineVertexBufferBase = nullptr;
         LineVertex* LineVertexBufferPtr = nullptr;
+        float LineWidth = 2.0f;
 
         // Mesh
         Ref<VertexArray> MeshVertexArray;
@@ -76,8 +49,6 @@ namespace Hazel {
         uint32_t MeshIndexCount = 0;
         MeshVertex* MeshVertexBufferBase = nullptr;
         MeshVertex* MeshVertexBufferPtr = nullptr;
-
-        float LineWidth = 2.0f;
 
         Ref<Texture2D> WhiteTexture;
 
@@ -105,28 +76,22 @@ namespace Hazel {
 
         s_Data.MeshVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(MeshVertex));
         s_Data.MeshVertexBuffer->SetLayout({
-            {ShaderDataType::Float3, "a_Position"},
-            {ShaderDataType::Float3, "a_Normal"},
-            {ShaderDataType::Float4, "a_Color"}
+            { ShaderDataType::Float3,  "a_Position"   },
+            { ShaderDataType::Float3,  "a_Color"      },
+            { ShaderDataType::Float3,  "a_Normal"     },
+            { ShaderDataType::Float2,  "a_TexCoord"   },
+            { ShaderDataType::Float3,  "a_Tangent"    },
+            { ShaderDataType::Float3,  "a_Bitangent"  }
         });
         s_Data.MeshVertexArray->AddVertexBuffer(s_Data.MeshVertexBuffer);
 
         s_Data.MeshVertexBufferBase = new MeshVertex[Renderer2DData::MaxVertices];
 
-        auto* meshIndices = new uint32_t[Renderer2DData::MaxIndices];
+        Model model("assets/stylized-popcorn-machine-lowpoly/source/SM_Popcorn Machine.fbx");
+        const MeshData& meshdata = model.GetData();
 
-        uint32_t meshOffset = 0;
-        for (uint32_t i = 0; i < Renderer2DData::MaxIndices; i += 6) {
-            meshIndices[i + 0] = meshOffset + 0;
-            meshIndices[i + 1] = meshOffset + 1;
-            meshIndices[i + 2] = meshOffset + 2;
-
-            meshOffset += 3;
-        }
-
-        Ref<IndexBuffer> meshIB = IndexBuffer::Create(meshIndices, Renderer2DData::MaxIndices);
-        s_Data.MeshVertexArray->SetIndexBuffer(meshIB);
-        delete[] meshIndices;
+        Ref<IndexBuffer> indexBuffer = IndexBuffer::Create(meshdata.indices.data(), meshdata.indices.size());
+        s_Data.MeshVertexArray->SetIndexBuffer(indexBuffer);
 
         // Quad
         s_Data.QuadVertexArray = VertexArray::Create();
@@ -174,7 +139,7 @@ namespace Hazel {
             { ShaderDataType::Float,  "a_Thickness"     },
             { ShaderDataType::Float,  "a_Fade"          },
             { ShaderDataType::Int,    "a_EntityId"      }
-        });
+                                             });
         s_Data.CircleVertexArray->AddVertexBuffer(s_Data.CircleVertexBuffer);
         s_Data.CircleVertexArray->SetIndexBuffer(quadIB);    // Use quad IB
         s_Data.CircleVertexBufferBase = new CircleVertex[Renderer2DData::MaxVertices];
@@ -187,7 +152,7 @@ namespace Hazel {
             { ShaderDataType::Float3, "a_Position" },
             { ShaderDataType::Float4, "a_Color"    },
             { ShaderDataType::Int,    "a_EntityId" }
-        });
+                                           });
         s_Data.LineVertexArray->AddVertexBuffer(s_Data.LineVertexBuffer);
         s_Data.LineVertexBufferBase = new LineVertex[Renderer2DData::MaxVertices];
 
@@ -268,7 +233,7 @@ namespace Hazel {
     }
 
     void Renderer2D::Flush() {
-        if(s_Data.MeshIndexCount)
+        if (s_Data.MeshIndexCount)
         {
             uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.MeshVertexBufferPtr - (uint8_t*)s_Data.MeshVertexBufferBase);
             s_Data.MeshVertexBuffer->SetData(s_Data.MeshVertexBufferBase, dataSize);
@@ -291,7 +256,7 @@ namespace Hazel {
             s_Data.Stats.DrawCalls++;
         }
 
-        if(s_Data.CircleIndexCount) {
+        if (s_Data.CircleIndexCount) {
             uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.CircleVertexBufferPtr - (uint8_t*)s_Data.CircleVertexBufferBase);
             s_Data.CircleVertexBuffer->SetData(s_Data.CircleVertexBufferBase, dataSize);
 
@@ -438,7 +403,7 @@ namespace Hazel {
     }
 
     void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRendererComponent, int entityId) {
-        if(spriteRendererComponent.Texture)
+        if (spriteRendererComponent.Texture)
             DrawQuad(transform, spriteRendererComponent.Texture, spriteRendererComponent.TilingFactor, spriteRendererComponent.Color, entityId);
         else
             DrawQuad(transform, spriteRendererComponent.Color, entityId);
@@ -511,13 +476,16 @@ namespace Hazel {
         s_Data.LineWidth = width;
     }
 
-    void Renderer2D::DrawMesh(const std::vector<MeshVertex>& meshes)
+    void Renderer2D::DrawMesh(const glm::mat4& transform, const MeshData& meshes)
     {
-        for(const auto mesh : meshes)
+        for (const MeshVertex& vertex : meshes.vertices)
         {
-            s_Data.MeshVertexBufferPtr->vertex = mesh.vertex;
-            s_Data.MeshVertexBufferPtr->normal = mesh.normal;
-            s_Data.MeshVertexBufferPtr->color = mesh.color;
+            s_Data.MeshVertexBufferPtr->Position = transform * glm::vec4(vertex.Position, 1.0);
+            s_Data.MeshVertexBufferPtr->Color = vertex.Color;
+            s_Data.MeshVertexBufferPtr->Normal = vertex.Normal;
+            s_Data.MeshVertexBufferPtr->TexCoord = vertex.TexCoord;
+            s_Data.MeshVertexBufferPtr->Tangent = vertex.Tangent;
+            s_Data.MeshVertexBufferPtr->Bitangent = vertex.Bitangent;
             s_Data.MeshVertexBufferPtr++;
 
             s_Data.MeshIndexCount += 1;

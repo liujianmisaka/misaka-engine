@@ -34,5 +34,4 @@ group "Dependencies"
 group ""
 
 include "Hazel"
-include "Sandbox"
 include "Hazelnut"

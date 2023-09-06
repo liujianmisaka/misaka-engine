@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Hazel/Model/Model.h"
 #include "Hazel/Renderer/Texture.h"
 #include "Hazel/Renderer/Camera.h"
 #include "Hazel/Renderer/OrthographicCamera.h"
@@ -50,7 +51,7 @@ namespace Hazel {
         static float GetLineEidth();
         static void SetLineWidth(float width);
 
-        static void DrawMesh(const std::vector<MeshVertex>& meshes);
+        static void DrawMesh(const glm::mat4& transform, const MeshData& meshes);
 
         // Stats
         struct Statistics {
